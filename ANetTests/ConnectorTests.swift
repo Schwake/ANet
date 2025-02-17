@@ -9,8 +9,15 @@ import Testing
 
 struct ConnectorTests {
 
-    @Test func <#test function name#>() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    @Test func hasConnectionTest() async throws {
+        let connector = Connector()
+        let nodeFrom = Node(sensors: [Sensor(position: 1)])
+        let nodeTo = Node(sensors: [Sensor(position: 2)])
+        connector.connect(from: nodeFrom, to: nodeTo)
+        #expect(connector.hasConnection(from: nodeFrom, to: nodeTo))
+        #expect(!connector.hasConnection(from: nodeTo, to: nodeFrom))
+
+        
     }
 
 }

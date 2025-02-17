@@ -18,4 +18,9 @@ struct Node {
         }
     }
     
+    
+    func has(sensor: Sensor) -> Bool {
+        return sensorDict[sensor] ?? false
+    }
+    
 }

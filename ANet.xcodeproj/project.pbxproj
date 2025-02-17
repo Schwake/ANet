@@ -33,8 +33,11 @@
 		37E482BF2D63C289002B6D75 /* Exceptions for "ANet" folder in "ANetTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Model/Connector.swift,
+				Model/Net.swift,
 				Model/Node.swift,
 				Model/Sensor.swift,
+				Util/SevenSegments.swift,
 			);
 			target = 37E4829B2D63C269002B6D75 /* ANetTests */;
 		};

@@ -29,9 +29,23 @@
 		37E482A62D63C269002B6D75 /* ANetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ANetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		37E482BF2D63C289002B6D75 /* Exceptions for "ANet" folder in "ANetTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model/Node.swift,
+				Model/Sensor.swift,
+			);
+			target = 37E4829B2D63C269002B6D75 /* ANetTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		37E4828D2D63C268002B6D75 /* ANet */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				37E482BF2D63C289002B6D75 /* Exceptions for "ANet" folder in "ANetTests" target */,
+			);
 			path = ANet;
 			sourceTree = "<group>";
 		};

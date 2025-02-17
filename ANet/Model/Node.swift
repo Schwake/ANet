@@ -6,3 +6,16 @@
 //
 
 import Foundation
+
+struct Node {
+    
+    let id = UUID()
+    var sensorDict: [Sensor: Bool] = [:]
+    
+    init(sensors: [Sensor]) {
+        for sensor in sensors {
+            sensorDict[sensor] = true
+        }
+    }
+    
+}

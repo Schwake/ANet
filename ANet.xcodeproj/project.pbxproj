@@ -37,6 +37,7 @@
 				Model/Net.swift,
 				Model/Node.swift,
 				Model/Sensor.swift,
+				Util/Crawler.swift,
 				Util/SevenSegments.swift,
 			);
 			target = 37E4829B2D63C269002B6D75 /* ANetTests */;

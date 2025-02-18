@@ -23,4 +23,21 @@ struct Node {
         return sensorDict[sensor] ?? false
     }
     
+    
+    func sensorsAs7Segment() -> String {
+        var toString = String()
+        for sensor in sensorDict.keys {
+            toString += "\(sensor.as7Segment())"
+        }
+        return toString
+    }
+    
+    func sensorsAsString() -> String {
+        var toString = String()
+        for sensor in sensorDict.keys {
+            toString += "\(sensor.asString())"
+        }
+        return toString
+    }
+    
 }

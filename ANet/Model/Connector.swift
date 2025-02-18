@@ -31,13 +31,25 @@ class Connector {
         
     
     func has(from fromNode: Node, to toNode: Node) -> Bool {
-        fromDict[fromNode.id]?.contains(toNode.id) ?? false
+        return fromDict[fromNode.id]?.contains(toNode.id) ?? false
     }
     
     
     func has(to toNode: Node, from fromNode: Node) -> Bool {
-        toDict[toNode.id]?.contains(fromNode.id) ?? false
+        return toDict[toNode.id]?.contains(fromNode.id) ?? false
     }
+    
+    
+    func has(from nodeID: UUID) -> Bool {
+        return fromDict[nodeID]?.isEmpty ?? false
+    }
+    
+    
+    func isResult(nodeID: UUID) -> Bool {
+        return !has(from: nodeID)
+    }
+    
+    
     
     
 }

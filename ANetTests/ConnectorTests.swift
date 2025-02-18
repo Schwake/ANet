@@ -16,8 +16,15 @@ struct ConnectorTests {
         connector.connect(from: nodeFrom, to: nodeTo)
         #expect(connector.hasConnection(from: nodeFrom, to: nodeTo))
         #expect(!connector.hasConnection(from: nodeTo, to: nodeFrom))
-
-        
+    }
+    
+    @Test func isResultTest() async throws {
+        let connector = Connector()
+        let nodeFrom = Node(sensors: [Sensor(position: 1)])
+        let nodeTo = Node(sensors: [Sensor(position: 2)])
+        connector.connect(from: nodeFrom, to: nodeTo)
+        #expect(!connector.isResult(nodeID: nodeFrom.id))
+        #expect(connector.isResult(nodeID: nodeTo.id))
     }
 
 }

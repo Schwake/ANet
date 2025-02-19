@@ -26,5 +26,14 @@ struct ConnectorTests {
         #expect(!connector.isResult(nodeID: nodeFrom.id))
         #expect(connector.isResult(nodeID: nodeTo.id))
     }
+    
+    @Test func isRootTest() async throws {
+        let connector = Connector()
+        let nodeFrom = Node(sensors: [Sensor(position: 1)])
+        let nodeTo = Node(sensors: [Sensor(position: 2)])
+        connector.connect(from: nodeFrom, to: nodeTo)
+        #expect(connector.isRoot(nodeID: nodeFrom.id))
+        #expect(!connector.isRoot(nodeID: nodeTo.id))
+    }
 
 }

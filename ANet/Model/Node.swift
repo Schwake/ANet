@@ -40,4 +40,51 @@ struct Node {
         return toString
     }
     
+    
+    func sensors(shared: [Sensor]) -> [Sensor] {
+            var answer = [Sensor]()
+            for sensor in shared {
+                if sensorDict[sensor] != nil {
+                    answer.append(sensor)
+                }
+            }
+            
+            return answer
+        }
+        
+        
+        func sensors(unshared: [Sensor]) -> [Sensor] {
+            var answer = [Sensor]()
+            for sensor in unshared {
+                if sensorDict[sensor] == nil {
+                    answer.append(sensor)
+                }
+            }
+            
+            return answer
+        }
+    
+    
+    mutating func remove(sensors: [Sensor]) {
+            for sensor in sensors {
+                sensorDict.removeValue(forKey: sensor)
+            }
+        }
+    
+    
+    func isToBeRemoved() -> Bool {
+        return sensorDict.isEmpty
+    }
+    
+    
+    
+       func sensors() -> [Sensor] {
+           
+           var answer = [Sensor]()
+           for sensor in sensorDict.keys {
+               answer.append(sensor)
+           }
+           return answer
+       }
+    
 }

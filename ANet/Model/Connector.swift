@@ -41,7 +41,12 @@ class Connector {
     
     
     func has(from nodeID: UUID) -> Bool {
-        return fromDict[nodeID]?.isEmpty ?? false
+        return fromDict.index(forKey: nodeID) != nil
+    }
+    
+    
+    func has(to nodeID: UUID) -> Bool {
+        return toDict.index(forKey: nodeID) != nil
     }
     
     
@@ -49,7 +54,64 @@ class Connector {
         return !has(from: nodeID)
     }
     
+    func isRoot(nodeID: UUID) -> Bool {
+        return !has(to: nodeID)
+    }
     
     
+    // Replace all connections TO cellA with connections to cellB
+        func moveAll(oldTo nodeA: UUID, newTo nodeB: UUID) {
+            if let nodes = toDict[nodeA] {
+                for nodeID in nodes {
+                    move(from: nodeID, oldTo: nodeA, newTo: nodeB)
+                }
+            }
+        }
     
+    
+    // Replace connection  from -> oldTo to from -> to including the to -> from connection
+       func move(from nodeID: UUID, oldTo oldNodeID: UUID, newTo newNodeID: UUID) {
+           
+           // Remove connection in fromDict
+           var newIDs = fromDict[nodeID]?.filter {$0 != oldNodeID}
+           fromDict[nodeID] = newIDs
+           
+           // Remove connection in toDict
+           newIDs = toDict[oldNodeID]?.filter {$0 != nodeID}
+           fromDict[nodeID] = newIDs
+           
+           // Add new connection
+           connect(from: nodeID, to: newNodeID)
+           
+       }
+    
+    
+    func connect(from fromNodeID: UUID, to toNodeID: UUID) {
+            fromDict[fromNodeID, default: []].append(toNodeID)
+            toDict[toNodeID, default: []].append(fromNodeID)
+        }
+    
+    
+    // Replace all connections FROM cellA with connections from cellB
+        func moveAll(oldFrom nodeA: UUID, newFrom nodeB: UUID) {
+            
+            // One by one: Create new connections newFrom <-> to (outgoing/incoming)
+            // One by one: Remove old connections oldFrom <- to (incoming)
+            for toID in fromDict[nodeA]! {
+                connect(from: nodeB, to: toID)
+                let fromIDs = toDict[toID]?.filter {$0 != nodeA}
+                toDict[toID] = fromIDs
+            }
+            
+            // Remove all old connections oldFrom -> to (outgoing)
+            fromDict.removeValue(forKey: nodeA)
+            
+        }
+    
+    
+    // Just incase - should have been dealt with in Net
+        func remove(nodeID: UUID) {
+            fromDict.removeValue(forKey: nodeID)
+            toDict.removeValue(forKey: nodeID)
+        }
 }

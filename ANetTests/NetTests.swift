@@ -39,5 +39,15 @@ struct NetTests {
         #expect(net.connector.fromDict.keys.count == 10)
         #expect(net.connector.toDict.keys.count == 10)
     }
+    
+    @Test func rootNodeIDsTest() async throws {
+        let net = Net()
+        let sensor1 = Sensor(position: 0)
+        let sensor2 = Sensor(position: 1)
+        let sensor3 = Sensor(position: 2)
+
+        net.populate(sensors: [sensor1, sensor2], result: sensor3)
+        #expect(net.rootNodeIDs().count == 1)
+    }
 
 }

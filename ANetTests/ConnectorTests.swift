@@ -35,5 +35,14 @@ struct ConnectorTests {
         #expect(connector.isRoot(nodeID: nodeFrom.id))
         #expect(!connector.isRoot(nodeID: nodeTo.id))
     }
+    
+    @Test func removeNodeIDTest() async throws {
+        let connector = Connector()
+        let nodeFrom = Node(sensors: [Sensor(position: 1)])
+        let nodeTo = Node(sensors: [Sensor(position: 2)])
+        connector.connect(from: nodeFrom, to: nodeTo)
+        connector.remove(nodeID: nodeTo.id)
+        #expect(!connector.hasConnection(from: nodeFrom, to: nodeTo))
+    }
 
 }

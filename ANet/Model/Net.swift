@@ -13,6 +13,27 @@ class Net {
     var nodeDict: [UUID : Node] = [:]
     
     
+    func rootNodeIDs() -> [UUID] {
+        var rootNodeIDs: [UUID] = []
+        for uuid in nodeDict.keys {
+            if connector.isRoot(nodeID: uuid) {
+                rootNodeIDs.append(uuid)
+            }
+        }
+        return rootNodeIDs
+    }
+    
+    
+    func populate(sensors: [Sensor], result: Sensor) {
+        let node = Node(sensors: sensors)
+        nodeDict[node.id] = node
+        let resultNode = Node(sensors: [result])
+        nodeDict[resultNode.id] = resultNode
+        connector.connect(from: node, to: resultNode)
+    }
+
+    
+    
 //    func merge() {
 //        
 //        let cellList = rootNodeIDs()
@@ -26,6 +47,7 @@ class Net {
 //        }
 //    }
     
+// MARK: Merge
     
     func merge(left leftID: UUID, right rightID: UUID) {
            
@@ -39,7 +61,8 @@ class Net {
             guard !connector.isResult(nodeID: leftID) && !connector.isResult(nodeID: rightID) else { return }
                   
            // No merge without shared sensors
-           let (sharedSensors) = calcValues(left: leftNode, right: rightNode)
+           //let (sharedSensors) = calcValues(left: leftNode, right: rightNode)
+           let sharedSensors = leftNode.sensors(shared: rightNode.sensors())
            guard !sharedSensors.isEmpty else { return }
        
            // Create a new cell for the shared values
@@ -81,31 +104,11 @@ class Net {
        }
 
     
+//    func calcValues(left lNode: Node, right rNode: Node) -> [Sensor]  {
+//            let shared = lNode.sensors(shared: rNode.sensors())
+//            return (shared)
+//        }
     
-    func rootNodeIDs() -> [UUID] {
-        var rootNodeIDs: [UUID] = []
-        for uuid in nodeDict.keys {
-            if connector.isRoot(nodeID: uuid) {
-                rootNodeIDs.append(uuid)
-            }
-        }
-        return rootNodeIDs
-    }
-    
-    
-    func populate(sensors: [Sensor], result: Sensor) {
-        let node = Node(sensors: sensors)
-        nodeDict[node.id] = node
-        let resultNode = Node(sensors: [result])
-        nodeDict[resultNode.id] = resultNode
-        connector.connect(from: node, to: resultNode)
-    }
-    
-    
-    func calcValues(left lNode: Node, right rNode: Node) -> [Sensor]  {
-            let shared = lNode.sensors(shared: rNode.sensors())
-            return (shared)
-        }
     
     func remove(nodeID: UUID) {
             nodeDict.removeValue(forKey: nodeID)

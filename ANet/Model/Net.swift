@@ -32,22 +32,21 @@ class Net {
         connector.connect(from: node, to: resultNode)
     }
 
+    // MARK: Merge
     
+    func merge() {
+        
+        let nodeList = rootNodeIDs()
+        
+        var downInd = nodeList.count - 1
+        let maxInd = (nodeList.count / 2) - 1
+        
+        for index in 0...maxInd {
+            merge(left: nodeList[index], right: nodeList[downInd])
+            downInd -= 1
+        }
+    }
     
-//    func merge() {
-//        
-//        let cellList = rootNodeIDs()
-//        
-//        var downInd = cellList.count - 1
-//        let maxInd = (cellList.count / 2) - 1
-//        
-//        for index in 0...maxInd {
-//            merge(left: cellList[index], right: cellList[downInd])
-//            downInd -= 1
-//        }
-//    }
-    
-// MARK: Merge
     
     func merge(left leftID: UUID, right rightID: UUID) {
            
@@ -103,12 +102,6 @@ class Net {
 
        }
 
-    
-//    func calcValues(left lNode: Node, right rNode: Node) -> [Sensor]  {
-//            let shared = lNode.sensors(shared: rNode.sensors())
-//            return (shared)
-//        }
-    
     
     func remove(nodeID: UUID) {
             nodeDict.removeValue(forKey: nodeID)

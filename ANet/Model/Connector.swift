@@ -50,9 +50,19 @@ class Connector {
     }
     
     
+    func outgoing(from nodeID: UUID) -> [UUID] {
+        var answer = [UUID]()
+        if let outIDs = fromDict[nodeID] {
+            answer = outIDs
+        }
+        return answer
+    }
+    
+    
     func isResult(nodeID: UUID) -> Bool {
         return !has(from: nodeID)
     }
+    
     
     func isRoot(nodeID: UUID) -> Bool {
         return !has(to: nodeID)

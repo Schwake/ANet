@@ -35,6 +35,7 @@
 			membershipExceptions = (
 				Model/Connector.swift,
 				Model/Net.swift,
+				Model/NetInfo.swift,
 				Model/Node.swift,
 				Model/Sensor.swift,
 				Util/Crawler.swift,

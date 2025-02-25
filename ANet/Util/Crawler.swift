@@ -85,4 +85,53 @@ class Crawler {
     }
     
     
+    func info(net: Net ) -> NetInfo {
+        
+        var nodes = 0
+        var outgoing = 0
+        var incoming = 0
+        var roots = 0
+        var results = 0
+        var depth = 0
+        
+        for nodeID in net.nodeDict.keys {
+            net.connector.isResult(nodeID: nodeID) ? results += 1 : ()
+            net.connector.isRoot(nodeID: nodeID) ? roots += 1 : ()
+        }
+        
+        nodes = net.nodeDict.count
+        
+        for value in net.connector.fromDict.values {
+                   outgoing += value.count
+        }
+        
+        for value in net.connector.toDict.values {
+                   incoming += value.count
+        }
+ 
+ 
+        for rootID in net.rootNodeIDs() {
+            
+            var nodeStack = [rootID]
+            var depthStack: [Int] = []
+
+            depthStack.append(0)
+            
+            while !nodeStack.isEmpty {
+                let currID = nodeStack.removeLast()
+                let currDepth = depthStack.removeLast()
+                let localDepth = currDepth
+                depth = max(depth, localDepth)
+                for child in net.connector.outgoing(from: currID) {
+                    nodeStack.insert(child, at: 0)
+                    depthStack.insert(localDepth + 1, at: 0)
+                }
+            }
+        }
+        
+        
+        return NetInfo(nodes: nodes, incoming: incoming, outgoing: outgoing, depth: depth, results: results, roots: roots)
+        
+    }
+    
 }

@@ -67,7 +67,7 @@ struct NetTests {
     }
     
     
-    @Test func mergeTests() async throws {
+    @Test func mergeTypesTests() async throws {
         
         let sensorA = Sensor(position: 1)
         let sensorB = Sensor(position: 2)
@@ -86,7 +86,7 @@ struct NetTests {
         var node0 = nodes[0]
         var node1 = nodes[1]
         net1.merge(left: node0, right: node1)
-        
+
         #expect(net1.rootNodeIDs().count == 2)
         #expect(net1.nodeDict[node0]?.sensors().count == 3)
         #expect(net1.nodeDict[node1]?.sensors().count == 3)
@@ -94,7 +94,14 @@ struct NetTests {
         // two root nodes, each with a result node
         // node0 -> result0
         // node1 -> result1
-        
+        var netInfo = Crawler().info(net: net1)
+        #expect(netInfo.nodes == 4)
+        #expect(netInfo.results == 2)
+        #expect(netInfo.roots == 2)
+        #expect(netInfo.incoming == 2)
+        #expect(netInfo.outgoing == 2)
+        #expect(netInfo.depth == 1)
+
         // left and right node do have unshared and shared sensors
         net1 = Net()
         net1.populate(sensors: [sensorA, sensorB, sensorC], result: result0)
@@ -112,6 +119,13 @@ struct NetTests {
         // newNode -> node1
         // node0 -> result0
         // node1 -> result1
+        netInfo = Crawler().info(net: net1)
+        #expect(netInfo.nodes == 5)
+        #expect(netInfo.results == 2)
+        #expect(netInfo.roots == 1)
+        #expect(netInfo.incoming == 4)
+        #expect(netInfo.outgoing == 4)
+        #expect(netInfo.depth == 2)
         
         // all of left node's sensors are shared with right node
         net1 = Net()
@@ -131,6 +145,13 @@ struct NetTests {
         // newNode -> node1
         // newNode -> result0
         // node1 -> result1
+        netInfo = Crawler().info(net: net1)
+        #expect(netInfo.nodes == 4)
+        #expect(netInfo.results == 2)
+        #expect(netInfo.roots == 1)
+        #expect(netInfo.incoming == 3)
+        #expect(netInfo.outgoing == 3)
+        #expect(netInfo.depth == 2)
         
         // all of right node's sensors are shared with left node
         net1 = Net()
@@ -150,7 +171,32 @@ struct NetTests {
         // newNode -> node1
         // newNode -> result0
         // node1 -> result1
+        netInfo = Crawler().info(net: net1)
+        #expect(netInfo.nodes == 4)
+        #expect(netInfo.results == 2)
+        #expect(netInfo.roots == 1)
+        #expect(netInfo.incoming == 3)
+        #expect(netInfo.outgoing == 3)
+        #expect(netInfo.depth == 2)
         
+    }
+    
+    @Test func mergeTests() {
+        
+        let sevenSegments = SevenSegments()
+        let net = Net()
+        for ind in 0..<10 {
+            let sensors = sevenSegments.sensors(for: ind)
+            let result = Sensor(position: ind)
+            net.populate(sensors: sensors, result: result)
+        }
+        
+        net.merge()
+        
+        let crawler = Crawler()
+        let dotString = crawler.toDot7Segment(net: net)
+        
+        crawler.visualize(content: dotString)
     }
     
 }

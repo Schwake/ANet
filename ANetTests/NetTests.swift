@@ -9,6 +9,8 @@ import Testing
 
 struct NetTests {
 
+    
+    // MARK: Populate
     //
     @Test func populateTest() async throws {
         let sevenSegments = SevenSegments()
@@ -39,6 +41,9 @@ struct NetTests {
         #expect(net.connector.fromDict.keys.count == 10)
         #expect(net.connector.toDict.keys.count == 10)
     }
+    
+    
+    // MARK: Merge
     
     @Test func rootNodeIDsTest() async throws {
         let net = Net()

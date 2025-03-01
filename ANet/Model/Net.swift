@@ -12,6 +12,18 @@ class Net {
     let connector = Connector()
     var nodeDict: [UUID : Node] = [:]
     
+    // MARK: Populate
+    
+    func populate(sensors: [Sensor], result: Sensor) {
+        let node = Node(sensors: sensors)
+        nodeDict[node.id] = node
+        let resultNode = Node(sensors: [result])
+        nodeDict[resultNode.id] = resultNode
+        connector.connect(from: node, to: resultNode)
+    }
+
+    // MARK: Merge
+    
     
     func rootNodeIDs() -> [UUID] {
         var rootNodeIDs: [UUID] = []
@@ -24,15 +36,11 @@ class Net {
     }
     
     
-    func populate(sensors: [Sensor], result: Sensor) {
-        let node = Node(sensors: sensors)
-        nodeDict[node.id] = node
-        let resultNode = Node(sensors: [result])
-        nodeDict[resultNode.id] = resultNode
-        connector.connect(from: node, to: resultNode)
+    func remove(nodeID: UUID) {
+        nodeDict.removeValue(forKey: nodeID)
+        connector.remove(nodeID: nodeID)
     }
-
-    // MARK: Merge
+    
     
     func merge() {
         
@@ -102,10 +110,5 @@ class Net {
 
        }
 
-    
-    func remove(nodeID: UUID) {
-            nodeDict.removeValue(forKey: nodeID)
-            connector.remove(nodeID: nodeID)
-        }
-    
+  
 }

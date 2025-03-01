@@ -123,11 +123,19 @@ struct ConnectorTests {
         connector.connect(from: nodeFrom, to: nodeTo)
         connector.connect(from: nodeFrom2, to: nodeTo)
         connector.moveAll(oldTo: nodeTo.id, newTo: nodeTo2.id)
-      
+        
         #expect(connector.outgoing(from: nodeFrom.id).contains(nodeTo2.id))
-        #expect(connector.outgoing(from: nodeFrom.id).count == 1)
+        #expect(!connector.outgoing(from: nodeFrom.id).contains(nodeTo.id))
         #expect(connector.outgoing(from: nodeFrom2.id).contains(nodeTo2.id))
+        #expect(!connector.outgoing(from: nodeFrom2.id).contains(nodeTo.id))
+        #expect(connector.outgoing(from: nodeFrom.id).count == 1)
         #expect(connector.outgoing(from: nodeFrom2.id).count == 1)
+        #expect(!connector.incoming(to: nodeTo.id).contains(nodeFrom.id))
+        #expect(connector.incoming(to: nodeTo2.id).contains(nodeFrom.id))
+        #expect(!connector.incoming(to: nodeTo.id).contains(nodeFrom2.id))
+        #expect(connector.incoming(to: nodeTo2.id).contains(nodeFrom2.id))
+        #expect(connector.incoming(to: nodeTo.id).count == 0)
+        #expect(connector.incoming(to: nodeTo2.id).count == 2)
     }
     
     @Test func moveFromOldToNewToTests() async throws {
@@ -140,8 +148,11 @@ struct ConnectorTests {
         connector.move(from: nodeFrom.id, oldTo: nodeTo.id, newTo: nodeTo2.id)
         #expect(connector.outgoing(from: nodeFrom.id).contains(nodeTo2.id))
         #expect(!connector.outgoing(from: nodeFrom.id).contains(nodeTo.id))
+        #expect(!connector.incoming(to: nodeTo.id).contains(nodeFrom.id))
+        #expect(connector.incoming(to: nodeTo2.id).contains(nodeFrom.id))
         #expect(connector.outgoing(from: nodeFrom.id).count == 1)
-
+        #expect(connector.incoming(to: nodeTo.id).count == 0)
+        #expect(connector.incoming(to: nodeTo2.id).count == 1)
     }
     
     

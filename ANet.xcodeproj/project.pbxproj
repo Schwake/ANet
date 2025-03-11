@@ -33,6 +33,9 @@
 		37E482BF2D63C289002B6D75 /* Exceptions for "ANet" folder in "ANetTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				MNIST/Images.swift,
+				MNIST/ImportExport.swift,
+				MNIST/Labels.swift,
 				Model/Connector.swift,
 				Model/Net.swift,
 				Model/NetInfo.swift,

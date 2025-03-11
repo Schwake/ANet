@@ -6,6 +6,7 @@
 //
 
 import Testing
+import Foundation
 
 struct NetTests {
 
@@ -40,6 +41,26 @@ struct NetTests {
         #expect(net.nodeDict.values.count == 20)
         #expect(net.connector.fromDict.keys.count == 10)
         #expect(net.connector.toDict.keys.count == 10)
+    }
+    
+    
+    // rootNodeIDs - isResult - rootCount
+    @Test func testSeveral() async throws {
+        let sevenSegments = SevenSegments()
+        let net = Net()
+        
+        for ind in 0..<10 {
+            let sensors = sevenSegments.sensors(for: ind)
+            let result = Sensor(position: ind)
+            net.populate(sensors: sensors, result: result)
+        }
+        
+        #expect(net.rootNodeIDs().count == 10)
+        
+        for id in net.connector.toDict.keys {
+            #expect(net.isResult(nodeID: id))
+        }
+        
     }
     
     
@@ -186,6 +207,87 @@ struct NetTests {
         
     }
     
+    
+    
+    @Test func testMerge61() {
+         
+         let sevenSegments = SevenSegments()
+         let net = Net()
+         var sensorDict: [Int : [Sensor]] = [:]
+         
+         let indices = [6,1]
+         for ind in indices {
+             let sensors = sevenSegments.sensors(for: ind)
+             sensorDict[ind] = sensors
+             let result = Sensor(position: ind)
+             net.populate(sensors: sensors, result: result)
+         }
+         
+         net.merge()
+         
+        let crawler = Crawler()
+        let dotString = crawler.toDot7Segment(net: net)
+        
+//        crawler.visualize(content: dotString)
+
+        let netInfo = crawler.info(net: net)
+
+        let info = netInfo.toString()
+        print(info)
+
+         #expect(netInfo.nodes == 5)
+         #expect(netInfo.incoming == 4)
+         #expect(netInfo.outgoing == 4)
+         #expect(netInfo.depth == 2)
+         #expect(netInfo.results == 2)
+         #expect(netInfo.roots == 1)
+
+
+     }
+
+     
+     @Test func testMerge639() {
+         
+         let sevenSegments = SevenSegments()
+         let net = Net()
+         
+         let indices = [6,3]
+         for ind in indices {
+             let sensors = sevenSegments.sensors(for: ind)
+             let result = Sensor(position: ind)
+             net.populate(sensors: sensors, result: result)
+         }
+         
+         net.merge()
+         
+         let sensors2 = sevenSegments.sensors(for: 9)
+         let result2 = Sensor(position: 9)
+         net.populate(sensors: sensors2, result: result2)
+
+         net.merge()
+         
+         let crawler = Crawler()
+         let dotString = crawler.toDot7Segment(net: net)
+         
+//         crawler.visualize(content: dotString)
+
+         let netInfo = crawler.info(net: net)
+
+         let info = netInfo.toString()
+         print(info)
+
+         
+         #expect(netInfo.nodes == 7)
+         #expect(netInfo.incoming == 6)
+         #expect(netInfo.outgoing == 6)
+         #expect(netInfo.depth == 2)
+         #expect(netInfo.results == 3)
+         #expect(netInfo.roots == 1)
+
+     }
+
+    
+    
     @Test func mergeTests() {
         
         let sevenSegments = SevenSegments()
@@ -203,5 +305,172 @@ struct NetTests {
         
         crawler.visualize(content: dotString)
     }
+    
+    
+    // MARK: Search
+    
+    @Test func testSearch() async throws {
+        
+        let sevenSegments = SevenSegments()
+        let net = Net()
+        var sensorDict: [Int : [Sensor]] = [:]
+        
+        for ind in 0..<10 {
+            let sensors = sevenSegments.sensors(for: ind)
+            sensorDict[ind] = sensors
+            let result = Sensor(position: ind)
+            net.populate(sensors: sensors, result: result)
+        }
+        
+        for ind in 0..<10 {
+            let searchResult = net.searchDFS(sensors: sensorDict[ind]!)
+            
+            #expect(searchResult.result!.position == ind)
+        }
+        
+    }
+    
+    
+    @Test func testMergeDetailSevenSegments() {
+        
+        let sevenSegments = SevenSegments()
+        let net = Net()
+        var sensorDict: [Int : [Sensor]] = [:]
+        
+        for ind in 0..<10 {
+            let sensors = sevenSegments.sensors(for: ind)
+            sensorDict[ind] = sensors
+            let result = Sensor(position: ind)
+            net.populate(sensors: sensors, result: result)
+        }
+        
+        let sValueA = Sensor(position: 1)
+        let sValueB = Sensor(position: 2)
+        let sValueC = Sensor(position: 3)
+        let sValueD = Sensor(position: 4)
+        let sValueE = Sensor(position: 5)
+        let sValueF = Sensor(position: 6)
+        let sValueG = Sensor(position: 7)
+
+        net.merge()
+        
+        let crawler = Crawler()
+        let dotString = crawler.toDot7Segment(net: net)
+        
+        crawler.visualize(content: dotString)
+
+        let netInfo = crawler.info(net: net)
+
+        let info = netInfo.toString()
+        print(info)
+
+        var searchResult = net.searchDFS(sensors: [sValueB, sValueC])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 1, "Expected search result 1, found \(aResult.position)")
+        }
+        searchResult = net.searchDFS(sensors:[sValueA, sValueB, sValueG, sValueE, sValueD])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 2, "Expected search result 2, found \(aResult.position)")
+        }
+        
+        searchResult = net.searchDFS(sensors:[sValueA, sValueB, sValueG, sValueC, sValueD])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 3, "Expected search result 3, found \(aResult.position)")
+        }
+        searchResult = net.searchDFS(sensors:[sValueB, sValueC, sValueG, sValueF])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 4, "Expected search result 4, found \(aResult.position)")
+        }
+        
+        searchResult = net.searchDFS(sensors:[sValueA, sValueF, sValueG, sValueC, sValueD])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 5, "Expected search result 5, found \(aResult.position)")
+        }
+        searchResult = net.searchDFS(sensors:[sValueE, sValueA, sValueF, sValueG, sValueC, sValueD])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 6, "Expected search result 6, found \(aResult.position)")
+        }
+        
+        searchResult = net.searchDFS(sensors:[sValueA, sValueB, sValueC])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 7, "Expected search result 7, found \(aResult.position)")
+        }
+        
+        searchResult = net.searchDFS(sensors:[sValueA, sValueB, sValueC, sValueD, sValueE, sValueF, sValueG])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 8, "Expected search result 8, found \(aResult.position)")
+        }
+        
+        searchResult = net.searchDFS(sensors:[sValueA, sValueB, sValueF, sValueG, sValueC, sValueD])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 9, "Expected search result 9, found \(aResult.position)")
+        }
+        searchResult = net.searchDFS(sensors:[sValueA, sValueB, sValueC, sValueD, sValueE, sValueF])
+        if let aResult = searchResult.result {
+            #expect(aResult.position == 0, "Expected search result 0, found \(aResult.position)")
+        }
+     
+    }
+    
+    
+    @Test func testMnistTrainingSearchDFSAsync() async {
+        
+        let positions = 50
+        let net = Net()
+        
+        print("Images: \(positions)")
+        let dateL = Date()
+        print("Load: \(dateL.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+
+        let labelPath = "idx1Label-test.txt"
+        let labels = ImportExport().loadSavedLabels(file: labelPath)
+        let imagePath = "idx3Image-test.txt"
+        let images = await ImportExport().loadSavedImages(tasks: 10, file: imagePath)
+        
+        let dateD = Date()
+        print("Decode: \(dateD.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+        
+        let labelSensors = labels.asSensors()
+        let imageSensors = images.asSensors()
+        
+        let trainingLabels: [Sensor]
+        let trainingImages: [[Sensor]]
+        
+        trainingLabels = Array(labelSensors[0..<positions])
+        trainingImages = Array(imageSensors[0..<positions])
+        
+        let dateT = Date()
+        print("Train/Merge: \(dateT.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+        
+        for index in 0..<positions {
+            net.populate(sensors: trainingImages[index], result: trainingLabels[index])
+        }
+        
+        net.merge()
+        print("Roots: \(net.rootNodeIDs().count)")
+
+        let dateC = Date()
+        print("Check: \(dateC.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+        
+        
+        let searchResults = await net.searchDFSAsyncBatch(sensors: trainingImages, tasks: 10)
+        var index = 1
+        for searchResult in searchResults {
+            if let result = searchResult.result {
+                print("\(index) - Result: \(result.asString())")
+                index += 1
+            } else {
+                print("\(index) - Missing result")
+                index += 1
+            }
+        }
+        
+        let dateDone = Date()
+        print("Done: \(dateDone.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+    }
+
+
+
+  
     
 }

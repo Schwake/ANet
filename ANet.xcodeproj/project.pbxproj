@@ -40,6 +40,7 @@
 				Model/Net.swift,
 				Model/NetInfo.swift,
 				Model/Node.swift,
+				Model/SearchResult.swift,
 				Model/Sensor.swift,
 				Util/Crawler.swift,
 				Util/SevenSegments.swift,

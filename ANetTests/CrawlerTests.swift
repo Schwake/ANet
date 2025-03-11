@@ -50,7 +50,12 @@ struct CrawlerTests {
             let result = Sensor(position: ind)
             net.populate(sensors: sensors, result: result)
         }
-        netInfo = Crawler().info(net: net)
+     
+        let crawler = Crawler()
+        let dotString = crawler.toDot7Segment(net: net)
+        
+        crawler.visualize(content: dotString)
+        netInfo = crawler.info(net: net)
         
         #expect(netInfo.nodes == 20)
         #expect(netInfo.incoming == 10)

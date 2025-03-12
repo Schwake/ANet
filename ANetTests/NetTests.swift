@@ -415,7 +415,7 @@ struct NetTests {
     
     @Test func testMnistTrainingSearchDFSAsync() async {
         
-        let positions = 50
+        let positions = 1000
         let net = Net()
         
         print("Images: \(positions)")
@@ -457,7 +457,7 @@ struct NetTests {
         var index = 1
         for searchResult in searchResults {
             if let result = searchResult.result {
-                print("\(index) - Result: \(result.asString())")
+//                print("\(index) - Result: \(result.asString())")
                 index += 1
             } else {
                 print("\(index) - Missing result")

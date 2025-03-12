@@ -116,12 +116,11 @@ class Net {
     func searchDFSAsyncBatch(sensors: [[Sensor]], tasks: Int) async -> [SearchResult] {
         let results = await withTaskGroup(of: [SearchResult].self) { group in
             
-            let rootHaps = rootNodeIDs().splitInSubArrays(into: tasks)
-            let sensorsHaps = sensors.splitInSubArrays(into: tasks)
+            let sensorHaps = sensors.splitInSubArrays(into: tasks)
             
             for ind in 0..<tasks {
                 group.addTask {
-                    return await self.searchDFSAsyncBatch(roots: rootHaps[ind], sensors: sensorsHaps[ind])
+                    return await self.searchDFSAsyncBatch(roots: self.rootNodeIDs(), sensors: sensorHaps[ind])
                 }
             }
             
@@ -137,7 +136,7 @@ class Net {
     
     func searchDFSAsyncBatch(roots: [UUID], sensors: [[Sensor]]) async -> [SearchResult] {
         var results: [SearchResult] = []
-        for ind in 0..<(sensors.count - 1) {
+        for ind in 0..<(sensors.count) {
             var searchResult = SearchResult(search: sensors[ind], found: [], passed: 0)
             for rootID in roots {
                 searchResult = searchResult.max(searchDFS(root: rootID, sensors: sensors[ind]))
@@ -158,7 +157,6 @@ class Net {
                 break
             }
         }
-        
         return searchResult
     }
     

@@ -32,8 +32,11 @@ struct ConnectorTests {
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
         connector.connect(from: nodeFrom, to: nodeTo)
-        #expect(connector.isRoot(nodeID: nodeFrom.id))
-        #expect(!connector.isRoot(nodeID: nodeTo.id))
+        // A node is always root node after creation, this changes only with a merge!
+        #expect(nodeFrom.isRoot)
+        #expect(nodeTo.isRoot)
+//        #expect(connector.isRoot(nodeID: nodeFrom.id))
+//        #expect(!connector.isRoot(nodeID: nodeTo.id))
     }
     
     @Test func removeNodeIDTest() async throws {

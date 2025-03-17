@@ -77,12 +77,7 @@ class Connector {
     func isResult(nodeID: UUID) -> Bool {
         return !has(from: nodeID)
     }
-    
-    
-    func isRoot(nodeID: UUID) -> Bool {
-        return !has(to: nodeID)
-    }
-    
+
     
     // Just incase - should have been dealt with in Net
     func remove(nodeID: UUID) {

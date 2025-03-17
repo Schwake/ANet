@@ -94,19 +94,18 @@ class Crawler {
         var results = 0
         var depth = 0
         
-        for nodeID in net.nodeDict.keys {
-            net.connector.isResult(nodeID: nodeID) ? results += 1 : ()
-            net.connector.isRoot(nodeID: nodeID) ? roots += 1 : ()
+        for (id, node) in net.nodeDict {
+            net.connector.isResult(nodeID: id) ? results += 1 : ()
+            node.isRoot ? roots += 1 : ()
         }
         
         nodes = net.nodeDict.count
-        
         for value in net.connector.fromDict.values {
-                   outgoing += value.count
+            outgoing += value.count
         }
         
         for value in net.connector.toDict.values {
-                   incoming += value.count
+            incoming += value.count
         }
  
  

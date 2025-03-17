@@ -17,7 +17,8 @@ class Net {
     func populate(sensors: [Sensor], result: Sensor) {
         let node = Node(sensors: sensors)
         nodeDict[node.id] = node
-        let resultNode = Node(sensors: [result])
+        var resultNode = Node(sensors: [result])
+        resultNode.isRoot = false
         nodeDict[resultNode.id] = resultNode
         connector.connect(from: node, to: resultNode)
     }
@@ -27,11 +28,13 @@ class Net {
     
     func rootNodeIDs() -> [UUID] {
         var rootNodeIDs: [UUID] = []
-        for uuid in nodeDict.keys {
-            if connector.isRoot(nodeID: uuid) {
-                rootNodeIDs.append(uuid)
+        
+        for (id, node) in nodeDict {
+            if node.isRoot {
+                rootNodeIDs.append(id)
             }
         }
+        
         return rootNodeIDs
     }
     
@@ -58,9 +61,6 @@ class Net {
     
     func merge(left leftID: UUID, right rightID: UUID) {
         
-        //        guard !self.isRemoved() && !rightCell.isRemoved() else { return rootCells}
-        //        guard !(self === rightCell) else { return rootCells}
-        
         var leftNode = nodeDict[leftID]!
         var rightNode = nodeDict[rightID]!
         
@@ -70,13 +70,22 @@ class Net {
         // No merge without shared sensors
         //let (sharedSensors) = calcValues(left: leftNode, right: rightNode)
         let sharedSensors = leftNode.sensors(shared: rightNode.sensors())
-        guard !sharedSensors.isEmpty else { return }
+        guard !sharedSensors.isEmpty else {
+//            for outID in connector.outgoing(from: leftNode.id) {
+//                merge(left: outID, right: rightID)
+//               
+//            }
+            return
+        }
         
         // Create a new cell for the shared values
         let sharedNode = Node(sensors: sharedSensors)
         let sharedID = sharedNode.id
         nodeDict[sharedNode.id] = sharedNode
         
+        // Left and right nodes can't be root nodes any more
+        leftNode.isRoot = false
+        rightNode.isRoot = false
         
         // Move all incoming toIDs for left/right to shared
         connector.moveAll(oldTo: leftID, newTo: sharedID)

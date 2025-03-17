@@ -307,6 +307,134 @@ struct NetTests {
     }
     
     
+    @Test func mergeComplex() {
+        
+        let net = Net()
+        let sensor1: Sensor = Sensor(position: 1)
+        let sensor2: Sensor = Sensor(position: 2)
+        let sensor3: Sensor = Sensor(position: 3)
+        let sensor4: Sensor = Sensor(position: 4)
+        let sensor5: Sensor = Sensor(position: 5)
+        let sensor6: Sensor = Sensor(position: 6)
+        let sensor7: Sensor = Sensor(position: 7)
+        let sensor8: Sensor = Sensor(position: 8)
+        let sensorResult1: Sensor = Sensor(position: 1)
+        let sensorResult2: Sensor = Sensor(position: 2)
+        let sensorResult3: Sensor = Sensor(position: 3)
+        
+        let node1 = Node(sensors: [sensor1, sensor2, sensor3, sensor4])
+        let node2 = Node(sensors: [sensor3, sensor4, sensor5, sensor6])
+        let node3 = Node(sensors: [sensor5, sensor6, sensor7, sensor8])
+        var result1 = Node(sensors: [sensorResult1])
+        result1.isRoot = false
+        var result2 = Node(sensors: [sensorResult2])
+        result2.isRoot = false
+        var result3 = Node(sensors: [sensorResult3])
+        result3.isRoot = false
+        
+        net.nodeDict[node1.id] = node1
+        net.nodeDict[node2.id] = node2
+        net.nodeDict[node3.id] = node3
+        net.nodeDict[result1.id] = result1
+        net.nodeDict[result2.id] = result2
+        net.nodeDict[result3.id] = result3
+        net.connector.connect(from: node1.id, to: result1.id)
+        net.connector.connect(from: node2.id, to: result2.id)
+        net.connector.connect(from: node3.id, to: result3.id)
+        
+        let crawler = Crawler()
+        var netInfo = crawler.info(net: net)
+//        var dotString = crawler.toDot7Segment(net: net)
+//        crawler.visualize(content: dotString)
+
+        #expect(netInfo.nodes == 6)
+        #expect(netInfo.incoming == 3)
+        #expect(netInfo.outgoing == 3)
+        #expect(netInfo.roots == 3)
+        #expect(netInfo.results == 3)
+        #expect(netInfo.depth == 1)
+        
+        net.merge(left: node1.id, right: node2.id)
+        
+        netInfo = crawler.info(net: net)
+//        var dotString = crawler.toDot7Segment(net: net)
+//        crawler.visualize(content: dotString)
+        
+        #expect(netInfo.nodes == 7)
+        #expect(netInfo.incoming == 5)
+        #expect(netInfo.outgoing == 5)
+        #expect(netInfo.roots == 2)
+        #expect(netInfo.results == 3)
+        #expect(netInfo.depth == 2)
+        
+        // There are only two root nodes
+        let rootNodes = net.rootNodeIDs()
+        net.merge(left: rootNodes[0], right: rootNodes[1])
+        netInfo = crawler.info(net: net)
+        
+        #expect(netInfo.nodes == 7)
+        #expect(netInfo.incoming == 6)
+        #expect(netInfo.outgoing == 6)
+        #expect(netInfo.roots == 2)
+        #expect(netInfo.results == 3)
+        #expect(netInfo.depth == 3)
+        let dotString = crawler.toDot7Segment(net: net)
+        crawler.visualize(content: dotString)
+
+        print("Ende")
+        
+    }
+    
+    
+    @Test func mergeComplexMNIST() async {
+        
+        let positions = 10000
+        let net = Net()
+        
+        print("Images: \(positions)")
+        let dateL = Date()
+        print("Load: \(dateL.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+
+        let labelPath = "idx1Label-test.txt"
+        let labels = ImportExport().loadSavedLabels(file: labelPath)
+        let imagePath = "idx3Image-test.txt"
+        let images = await ImportExport().loadSavedImages(tasks: 10, file: imagePath)
+        
+        let dateD = Date()
+        print("Decode: \(dateD.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+        
+        let labelSensors = labels.asSensors()
+        let imageSensors = images.asSensors()
+        
+        let trainingLabels: [Sensor]
+        let trainingImages: [[Sensor]]
+        
+        trainingLabels = Array(labelSensors[0..<positions])
+        trainingImages = Array(imageSensors[0..<positions])
+        
+        let dateT = Date()
+        print("Train/Merge: \(dateT.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+        
+        for index in 0..<positions {
+            net.populate(sensors: trainingImages[index], result: trainingLabels[index])
+        }
+        
+        for _ in 0..<100 {
+            net.merge()
+        }
+
+        let dateD2 = Date()
+        print("Done: \(dateD2.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+        
+        let crawler = Crawler()
+        let netInfo = crawler.info(net: net)
+    
+        print(netInfo.toString())
+        
+        
+    }
+    
+    
     // MARK: Search
     
     @Test func testSearch() async throws {
@@ -415,7 +543,7 @@ struct NetTests {
     
     @Test func testMnistTrainingSearchDFSAsync() async {
         
-        let positions = 1000
+        let positions = 100
         let net = Net()
         
         print("Images: \(positions)")
@@ -470,7 +598,4 @@ struct NetTests {
     }
 
 
-
-  
-    
 }

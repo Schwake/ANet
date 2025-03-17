@@ -11,11 +11,14 @@ struct Node {
     
     let id = UUID()
     var sensorDict: [Sensor: Bool] = [:]
+    var isRoot = false
     
+    // Initially a node is always a root node
     init(sensors: [Sensor]) {
         for sensor in sensors {
             sensorDict[sensor] = true
         }
+        isRoot = true
     }
     
     

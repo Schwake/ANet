@@ -21,7 +21,7 @@ struct NetInfo {
         
         var answer = ""
         
-        answer += "Node:        \(nodes)\n"
+        answer += "Nodes:        \(nodes)\n"
         answer += "Incoming:    \(incoming)\n"
         answer += "Outgoing:    \(outgoing)\n"
         answer += "Depth:       \(depth)\n"

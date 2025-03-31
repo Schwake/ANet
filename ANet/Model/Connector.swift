@@ -52,6 +52,20 @@ class Connector {
     }
     
     
+    func pathFor(nodeID: UUID) -> [UUID] {
+        var nodeStack = [nodeID]
+        var pathStack = [nodeID]
+        
+        while !nodeStack.isEmpty {
+            let currID = nodeStack.removeFirst()
+            for child in outgoing(from: currID) {
+                nodeStack.insert(child, at: 0)
+                pathStack.insert(child, at: 0)
+            }
+        }
+        return pathStack
+    }
+    
     // MARK: Crawler info
     
     func outgoing(from nodeID: UUID) -> [UUID] {

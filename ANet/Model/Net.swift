@@ -25,7 +25,7 @@ class Net {
     
     // MARK: Merge
     
-    
+    // Paths from these nodes lead to result
     func rootNodeIDs() -> [UUID] {
         var rootNodeIDs: [UUID] = []
         
@@ -38,6 +38,17 @@ class Net {
         return rootNodeIDs
     }
     
+    // These are root nodes that do not have incoming connections (level 0)
+    func rootNodeIDsLevel0() -> [UUID] {
+        let roots = rootNodeIDs()
+        return roots.filter { connector.incoming(to: $0).isEmpty }
+    }
+    
+    
+    func isValid(id: UUID) -> Bool {
+        return nodeDict[id] != nil
+    }
+    
     
     func remove(nodeID: UUID) {
         nodeDict.removeValue(forKey: nodeID)
@@ -47,7 +58,7 @@ class Net {
     
     func merge() {
         
-        let nodeList = rootNodeIDs()
+        let nodeList = rootNodeIDsLevel0()
         
         var downInd = nodeList.count - 1
         let maxInd = (nodeList.count / 2) - 1
@@ -59,33 +70,66 @@ class Net {
     }
     
     
-    func merge(left leftID: UUID, right rightID: UUID) {
+    func mergeComplex() -> [UUID] {
+        
+        var answer: [UUID] = []
+        let nodeList = rootNodeIDsLevel0()
+        
+        var downInd = nodeList.count - 1
+        let maxInd = (nodeList.count / 2) - 1
+        
+        for index in 0...maxInd {
+            answer.append(contentsOf: mergeComplex(left: nodeList[index], right: nodeList[downInd]))
+            downInd -= 1
+        }
+        return answer
+    }
+    
+    
+     
+    
+    func mergeComplex(left leftID: UUID, right rightID: UUID) -> [UUID] {
+        var answer: [UUID] = []
+        let pathIDs = connector.pathFor(nodeID: leftID)
+        for id in pathIDs {
+            if isValid(id: id) && isValid(id: rightID) {
+                answer.append(contentsOf: merge(left: id, right: rightID))
+            } else {
+                break
+            }
+        }
+        return answer
+    }
+    
+    
+    func merge(left leftID: UUID, right rightID: UUID) -> [UUID] {
+        var answer = [leftID, rightID]
         
         var leftNode = nodeDict[leftID]!
         var rightNode = nodeDict[rightID]!
         
         // Do not merge with result
-        guard !connector.isResult(nodeID: leftID) && !connector.isResult(nodeID: rightID) else { return }
+        guard !connector.isResult(nodeID: leftID) && !connector.isResult(nodeID: rightID) else { return answer }
         
         // No merge without shared sensors
         //let (sharedSensors) = calcValues(left: leftNode, right: rightNode)
         let sharedSensors = leftNode.sensors(shared: rightNode.sensors())
-        guard !sharedSensors.isEmpty else {
-//            for outID in connector.outgoing(from: leftNode.id) {
-//                merge(left: outID, right: rightID)
-//               
-//            }
-            return
-        }
+        guard !sharedSensors.isEmpty else { return answer }
         
         // Create a new cell for the shared values
         let sharedNode = Node(sensors: sharedSensors)
         let sharedID = sharedNode.id
         nodeDict[sharedNode.id] = sharedNode
+        answer = [sharedID]
         
         // Left and right nodes can't be root nodes any more
-        leftNode.isRoot = false
-        rightNode.isRoot = false
+        // But only for level 0 nodes (no incoming)
+        if connector.incoming(to: leftID).isEmpty {
+            leftNode.isRoot = false
+        }
+        if connector.incoming(to: rightID).isEmpty {
+            rightNode.isRoot = false
+        }
         
         // Move all incoming toIDs for left/right to shared
         connector.moveAll(oldTo: leftID, newTo: sharedID)
@@ -116,6 +160,7 @@ class Net {
         }
         
         //        cleanUp()
+        return answer
         
     }
     

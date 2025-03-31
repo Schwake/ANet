@@ -419,15 +419,20 @@ struct NetTests {
             net.populate(sensors: trainingImages[index], result: trainingLabels[index])
         }
         
-        for _ in 0..<100 {
+        let crawler = Crawler()
+        var netInfo = crawler.info(net: net)
+    
+        print(netInfo.toString())
+        
+        for _ in 0..<1 {
+//            net.mergeComplex()
             net.merge()
         }
 
         let dateD2 = Date()
         print("Done: \(dateD2.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
         
-        let crawler = Crawler()
-        let netInfo = crawler.info(net: net)
+        netInfo = crawler.info(net: net)
     
         print(netInfo.toString())
         

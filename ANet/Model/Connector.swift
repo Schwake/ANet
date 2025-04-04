@@ -51,7 +51,7 @@ class Connector {
         return toDict.index(forKey: nodeID) != nil
     }
     
-    
+  
     func pathFor(nodeID: UUID) -> [UUID] {
         var nodeStack = [nodeID]
         var pathStack = [nodeID]
@@ -59,12 +59,28 @@ class Connector {
         while !nodeStack.isEmpty {
             let currID = nodeStack.removeFirst()
             for child in outgoing(from: currID) {
-                nodeStack.insert(child, at: 0)
-                pathStack.insert(child, at: 0)
+                nodeStack.append(child)
+                pathStack.append(child)
             }
         }
         return pathStack
     }
+
+    
+    
+//    func pathFor(nodeID: UUID) -> [UUID] {
+//        var nodeStack = [nodeID]
+//        var pathStack = [nodeID]
+//        
+//        while !nodeStack.isEmpty {
+//            let currID = nodeStack.removeFirst()
+//            for child in outgoing(from: currID) {
+//                nodeStack.insert(child, at: 0)
+//                pathStack.insert(child, at: 0)
+//            }
+//        }
+//        return pathStack
+//    }
     
     // MARK: Crawler info
     

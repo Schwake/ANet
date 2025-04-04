@@ -93,6 +93,7 @@ class Crawler {
         var roots = 0
         var results = 0
         var depth = 0
+        var rootsInside = 0
         
         for (id, node) in net.nodeDict {
             net.connector.isResult(nodeID: id) ? results += 1 : ()
@@ -129,7 +130,7 @@ class Crawler {
         }
         
         
-        return NetInfo(nodes: nodes, incoming: incoming, outgoing: outgoing, depth: depth, results: results, roots: roots)
+        return NetInfo(nodes: nodes, incoming: incoming, outgoing: outgoing, depth: depth, results: results, roots: roots, rootsInside: rootsInside)
         
     }
     

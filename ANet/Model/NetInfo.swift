@@ -15,6 +15,7 @@ struct NetInfo {
     let depth: Int
     let results: Int
     let roots: Int
+    let rootsInside: Int?
     
     
     func toString() -> String {
@@ -27,6 +28,7 @@ struct NetInfo {
         answer += "Depth:       \(depth)\n"
         answer += "Results:     \(results)\n"
         answer += "Roots:       \(roots)\n"
+        answer += "RootsInside:  \(rootsInside ?? 0)\n"
         
         return answer
     }

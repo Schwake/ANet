@@ -424,17 +424,17 @@ struct NetTests {
     
         print(netInfo.toString())
         
-        for _ in 0..<1 {
-//            net.mergeComplex()
-            net.merge()
+        for index in 0..<10 {
+            print("Index: \(index)")
+            net.mergeComplex()
+            netInfo = crawler.info(net: net)
+            print(netInfo.toString())
         }
 
         let dateD2 = Date()
         print("Done: \(dateD2.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
         
-        netInfo = crawler.info(net: net)
-    
-        print(netInfo.toString())
+
         
         
     }

@@ -344,8 +344,8 @@ struct NetTests {
         
         let crawler = Crawler()
         var netInfo = crawler.info(net: net)
-//        var dotString = crawler.toDot7Segment(net: net)
-//        crawler.visualize(content: dotString)
+        var dotString = crawler.toDot7Segment(net: net)
+        crawler.visualize(content: dotString)
 
         #expect(netInfo.nodes == 6)
         #expect(netInfo.incoming == 3)
@@ -378,8 +378,8 @@ struct NetTests {
         #expect(netInfo.roots == 2)
         #expect(netInfo.results == 3)
         #expect(netInfo.depth == 3)
-        let dotString = crawler.toDot7Segment(net: net)
-        crawler.visualize(content: dotString)
+//        let dotString = crawler.toDot7Segment(net: net)
+//        crawler.visualize(content: dotString)
 
         print("Ende")
         

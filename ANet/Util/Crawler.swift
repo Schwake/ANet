@@ -51,11 +51,11 @@ class Crawler {
     func visualize(content: String) {
         
         _ = self.saveToFile(content: content)
-        // print("Basic Net: \(dotString)")
+//        print("Basic Net: \(content)")
         
         //
         let commandSH = URL(fileURLWithPath: "/bin/sh")
-        let paramSH = "/Users/greg/Library/Containers/de.greg.ANet/Data/Documents/net.sh"
+        let paramSH = "/Users/gregwerk/nobel/ANet/net.sh"
         try! Process.run(commandSH, arguments: [paramSH])
     }
     
@@ -81,6 +81,7 @@ class Crawler {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         
         // just send back the first one, which ought to be the only one
+        print("Paths: \(paths[0])")
         return paths[0]
     }
     

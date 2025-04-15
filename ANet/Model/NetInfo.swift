@@ -33,4 +33,34 @@ struct NetInfo {
         return answer
     }
     
+    
+    func checkAcyclicGraph(net: Net) -> Int {
+        
+        var answer = 0
+        var nodeStack: [UUID] = []
+        var pathStack: [UUID] = []
+        
+        for nodeID in net.nodeDict.keys {
+            nodeStack = [nodeID]
+            pathStack = [nodeID]
+            
+            while !nodeStack.isEmpty {
+                let currID = nodeStack.removeFirst()
+                for child in net.connector.outgoing(from: currID) {
+                    nodeStack.append(child)
+                    pathStack.append(child)
+                }
+                for item in pathStack {
+                    let pathStackCopy = Set(pathStack)
+                    if pathStackCopy.count != pathStack.count {
+                        answer += 1
+                        nodeStack.removeAll()
+                        pathStack.removeAll()
+                    }
+                }
+            }
+        }
+        return answer
+    }
+    
 }

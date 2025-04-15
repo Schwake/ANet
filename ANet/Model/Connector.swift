@@ -55,11 +55,18 @@ class Connector {
     func pathFor(nodeID: UUID) -> [UUID] {
         var nodeStack = [nodeID]
         var pathStack = [nodeID]
+        var checkDict: [UUID : Bool] = [nodeID : true]
         
         while !nodeStack.isEmpty {
             let currID = nodeStack.removeFirst()
             for child in outgoing(from: currID) {
                 nodeStack.append(child)
+                if checkDict.keys.contains(child) {
+                    print("ACYCLIC GRAPH")
+                    nodeStack.removeAll()
+                } else {
+                    checkDict[child] = true
+                }
                 pathStack.append(child)
             }
         }

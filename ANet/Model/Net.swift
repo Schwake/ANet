@@ -45,6 +45,13 @@ class Net {
     }
     
     
+    // These are root nodes that do have incoming connections (level 0)
+    func rootNodeIDsInternal() -> [UUID] {
+        let roots = rootNodeIDs()
+        return roots.filter { !connector.incoming(to: $0).isEmpty }
+    }
+    
+    
     func isValid(id: UUID) -> Bool {
         return nodeDict[id] != nil
     }
@@ -64,46 +71,66 @@ class Net {
         let maxInd = (nodeList.count / 2) - 1
         
         for index in 0...maxInd {
-            merge(left: nodeList[index], right: nodeList[downInd])
+            _ = merge(left: nodeList[index], right: nodeList[downInd])
             downInd -= 1
         }
     }
     
     
-    func mergeComplex() -> [UUID] {
+    func mergeInternal() {
         
-        var answer: [UUID] = []
+        let nodeList = rootNodeIDsInternal()
+        var downInd = nodeList.count - 1
+        let maxInd = (nodeList.count / 2) - 1
+//        print("root IDs: \(nodeList.count)")
+        guard downInd > 3 else { return }
+        
+        for index in 0...maxInd {
+//            print("internal index: \(index) max: \(maxInd)")
+            mergeComplex(left: nodeList[index], right: nodeList[downInd])
+            downInd -= 1
+        }
+
+    }
+    
+    
+    func mergeComplex() {
+        
         let nodeList = rootNodeIDsLevel0()
         
         var downInd = nodeList.count - 1
         let maxInd = (nodeList.count / 2) - 1
-        
+//        print("root IDs: \(nodeList.count)")
+        guard downInd > 3 else { return }
         for index in 0...maxInd {
-            answer.append(contentsOf: mergeComplex(left: nodeList[index], right: nodeList[downInd]))
+            mergeComplex(left: nodeList[index], right: nodeList[downInd])
             downInd -= 1
         }
-        return answer
+
     }
     
     
-     
-    
-    func mergeComplex(left leftID: UUID, right rightID: UUID) -> [UUID] {
-        var answer: [UUID] = []
+    func mergeComplex(left leftID: UUID, right rightID: UUID) {
         let pathIDs = connector.pathFor(nodeID: leftID)
+//        print("pathFor")
+        var index = 0
         for id in pathIDs {
+            index += 1
+//            print("id-index: \(index)")
             if isValid(id: id) && isValid(id: rightID) {
-                answer.append(contentsOf: merge(left: id, right: rightID))
+                if merge(left: id, right: rightID) {
+                    break
+                }
             } else {
                 break
             }
         }
-        return answer
+//        print("id-index: \(index)")
     }
     
     
-    func merge(left leftID: UUID, right rightID: UUID) -> [UUID] {
-        var answer = [leftID, rightID]
+    func merge(left leftID: UUID, right rightID: UUID) -> Bool {
+        var answer = false
         
         var leftNode = nodeDict[leftID]!
         var rightNode = nodeDict[rightID]!
@@ -117,13 +144,18 @@ class Net {
         guard !sharedSensors.isEmpty else { return answer }
         
         // Create a new cell for the shared values
-        let sharedNode = Node(sensors: sharedSensors)
+        // Shared node is initially not root - needs to be checked later
+        var sharedNode = Node(sensors: sharedSensors)
+        if leftNode.isRoot || rightNode.isRoot {
+            sharedNode.isRoot = true
+        }
         let sharedID = sharedNode.id
         nodeDict[sharedNode.id] = sharedNode
-        answer = [sharedID]
+        answer = true
         
         // Left and right nodes can't be root nodes any more
         // But only for level 0 nodes (no incoming)
+        //
         if connector.incoming(to: leftID).isEmpty {
             leftNode.isRoot = false
         }

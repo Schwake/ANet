@@ -345,7 +345,7 @@ struct NetTests {
         let crawler = Crawler()
         var netInfo = crawler.info(net: net)
         var dotString = crawler.toDot7Segment(net: net)
-        crawler.visualize(content: dotString)
+//        crawler.visualize(content: dotString)
 
         #expect(netInfo.nodes == 6)
         #expect(netInfo.incoming == 3)
@@ -357,7 +357,7 @@ struct NetTests {
         net.merge(left: node1.id, right: node2.id)
         
         netInfo = crawler.info(net: net)
-//        var dotString = crawler.toDot7Segment(net: net)
+        dotString = crawler.toDot7Segment(net: net)
 //        crawler.visualize(content: dotString)
         
         #expect(netInfo.nodes == 7)
@@ -369,8 +369,10 @@ struct NetTests {
         
         // There are only two root nodes
         let rootNodes = net.rootNodeIDs()
-        net.merge(left: rootNodes[0], right: rootNodes[1])
+        net.mergeComplex(left: rootNodes[0], right: rootNodes[1])
         netInfo = crawler.info(net: net)
+        dotString = crawler.toDot7Segment(net: net)
+        crawler.visualize(content: dotString)
         
         #expect(netInfo.nodes == 7)
         #expect(netInfo.incoming == 6)
@@ -378,10 +380,7 @@ struct NetTests {
         #expect(netInfo.roots == 2)
         #expect(netInfo.results == 3)
         #expect(netInfo.depth == 3)
-//        let dotString = crawler.toDot7Segment(net: net)
-//        crawler.visualize(content: dotString)
 
-        print("Ende")
         
     }
     
@@ -424,7 +423,7 @@ struct NetTests {
         
         print(netInfo.toString())
         
-        for index in 0..<12 {
+        for index in 0..<20 {
             print("IndexComplex: \(index)")
             net.mergeComplex()
                         netInfo = crawler.info(net: net)
@@ -586,6 +585,7 @@ struct NetTests {
     
             let crawler = Crawler()
             var netInfo = crawler.info(net: net)
+            print(netInfo.toString())
 
             for index in 0..<12 {
                 print("IndexComplex: \(index)")
@@ -593,6 +593,10 @@ struct NetTests {
                             netInfo = crawler.info(net: net)
                             print(netInfo.toString())
                         }
+            
+            netInfo = crawler.info(net: net)
+            print(netInfo.toString())
+            
 //            net.merge()
 //            print("Roots: \(net.rootNodeIDs().count)")
 //            
@@ -600,11 +604,11 @@ struct NetTests {
             print("Check: \(dateC.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
             
             
-            let searchResults = await net.searchDFSAsyncBatch(sensors: trainingImages, tasks: 10)
+            let searchResults = await net.searchDFSAsyncBatch(sensors: trainingImages, tasks: 15)
             var index = 1
             for searchResult in searchResults {
                 if let result = searchResult.result {
-                    //                print("\(index) - Result: \(result.asString())")
+                    print("\(index) - Result: \(result.asString())")
                     index += 1
                 } else {
                     print("\(index) - Missing result")

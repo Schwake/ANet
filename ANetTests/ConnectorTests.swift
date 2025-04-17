@@ -176,5 +176,72 @@ struct ConnectorTests {
     }
     
     
+    @Test func pathForTests() {
+        
+        let net = Net()
+        let sensor1: Sensor = Sensor(position: 1)
+        let sensor2: Sensor = Sensor(position: 2)
+        let sensor3: Sensor = Sensor(position: 3)
+        let sensor4: Sensor = Sensor(position: 4)
+        let sensor5: Sensor = Sensor(position: 5)
+        let sensor6: Sensor = Sensor(position: 6)
+        let sensor7: Sensor = Sensor(position: 7)
+        let sensor8: Sensor = Sensor(position: 8)
+        let sensorResult1: Sensor = Sensor(position: 1)
+        let sensorResult2: Sensor = Sensor(position: 2)
+        let sensorResult3: Sensor = Sensor(position: 3)
+        
+        let node1 = Node(sensors: [sensor1, sensor2, sensor3, sensor4])
+        let node2 = Node(sensors: [sensor3, sensor4, sensor5, sensor6])
+        let node3 = Node(sensors: [sensor5, sensor6, sensor7, sensor8])
+        var result1 = Node(sensors: [sensorResult1])
+        result1.isRoot = false
+        var result2 = Node(sensors: [sensorResult2])
+        result2.isRoot = false
+        var result3 = Node(sensors: [sensorResult3])
+        result3.isRoot = false
+        
+        net.nodeDict[node1.id] = node1
+        net.nodeDict[node2.id] = node2
+        net.nodeDict[node3.id] = node3
+        net.nodeDict[result1.id] = result1
+        net.nodeDict[result2.id] = result2
+        net.nodeDict[result3.id] = result3
+        net.connector.connect(from: node1.id, to: result1.id)
+        net.connector.connect(from: node2.id, to: result2.id)
+        net.connector.connect(from: node3.id, to: result3.id)
+        
+        let crawler = Crawler()
+        var netInfo = crawler.info(net: net)
+        var dotString = crawler.toDot7Segment(net: net)
+        //        crawler.visualize(content: dotString)
+        
+        #expect(netInfo.nodes == 6)
+        #expect(netInfo.incoming == 3)
+        #expect(netInfo.outgoing == 3)
+        #expect(netInfo.roots == 3)
+        #expect(netInfo.results == 3)
+        #expect(netInfo.depth == 1)
+        
+        net.merge(left: node1.id, right: node2.id)
+        
+        let rootNodes = net.rootNodeIDs()
+        let path = net.connector.pathFor(nodeID: rootNodes[0])
+        print("Path size: \(path.count) ")
+        
+        // Content of 0,1 might switch - rerun and check again
+        net.mergeComplex(left: rootNodes[0], right: rootNodes[1])
+        dotString = crawler.toDot7Segment(net: net)
+        crawler.visualize(content: dotString)
+        netInfo = crawler.info(net: net)
+        
+        #expect(netInfo.nodes == 7)
+        #expect(netInfo.incoming == 6)
+        #expect(netInfo.outgoing == 6)
+        #expect(netInfo.roots == 2)
+        #expect(netInfo.results == 3)
+        #expect(netInfo.depth == 3)
+        
+    }
    
 }

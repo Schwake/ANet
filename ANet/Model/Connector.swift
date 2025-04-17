@@ -70,6 +70,7 @@ class Connector {
                 pathStack.append(child)
             }
         }
+//        print("PathStack size: \(pathStack.count)")
         return pathStack
     }
 

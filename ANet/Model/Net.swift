@@ -112,7 +112,7 @@ class Net {
     
     func mergeComplex(left leftID: UUID, right rightID: UUID) {
         let pathIDs = connector.pathFor(nodeID: leftID)
-//        print("pathFor")
+//        print("PathID count: \(pathIDs.count)")
         var index = 0
         for id in pathIDs {
             index += 1

@@ -77,26 +77,48 @@ class Net {
     }
     
     
-    func mergeInternal() {
+//    func mergeInternal() {
+//        
+//        let nodeList = rootNodeIDsInternal()
+//        var downInd = nodeList.count - 1
+//        let maxInd = (nodeList.count / 2) - 1
+////        print("root IDs: \(nodeList.count)")
+//        guard downInd > 3 else { return }
+//        
+//        for index in 0...maxInd {
+////            print("internal index: \(index) max: \(maxInd)")
+//            mergeComplex(left: nodeList[index], right: nodeList[downInd])
+//            downInd -= 1
+//        }
+//
+//    }
+    
+    
+    func mergeComplexRootsLevel0() {
         
-        let nodeList = rootNodeIDsInternal()
-        var downInd = nodeList.count - 1
-        let maxInd = (nodeList.count / 2) - 1
-//        print("root IDs: \(nodeList.count)")
-        guard downInd > 3 else { return }
-        
-        for index in 0...maxInd {
-//            print("internal index: \(index) max: \(maxInd)")
-            mergeComplex(left: nodeList[index], right: nodeList[downInd])
-            downInd -= 1
-        }
-
+//        let nodeList = rootNodeIDsLevel0().shuffled()
+        let nodeList = rootNodeIDsLevel0()
+        mergeComplex(roots: nodeList)
     }
     
     
-    func mergeComplex() {
+    func mergeComplexRootsInside() {
         
-        let nodeList = rootNodeIDsLevel0()
+        let nodeList = rootNodeIDsInternal()
+        mergeComplex(roots: nodeList)
+    }
+    
+    
+    func mergeComplexRootsAll() {
+        
+        let rootsLevel0 = rootNodeIDsLevel0()
+        let rootsInside = rootNodeIDsInternal()
+        mergeComplex(roots: rootsLevel0 + rootsInside)
+    }
+    
+    func mergeComplex(roots: [UUID]) {
+        
+        let nodeList = roots
         
         var downInd = nodeList.count - 1
         let maxInd = (nodeList.count / 2) - 1
@@ -119,6 +141,8 @@ class Net {
 //            print("id-index: \(index)")
             if isValid(id: id) && isValid(id: rightID) {
                 if merge(left: id, right: rightID) {
+                    break
+                } else {
                     break
                 }
             } else {
@@ -167,30 +191,34 @@ class Net {
         connector.moveAll(oldTo: leftID, newTo: sharedID)
         connector.moveAll(oldTo: rightID, newTo: sharedID)
         
-        // remove shared sensors from left
-        // left is gone -> shared gets the outgoing from left
-        // otherwise shared connects to left
-        leftNode.remove(sensors: sharedSensors)
-        nodeDict[leftID] = leftNode
-        if leftNode.isToBeRemoved() {
-            connector.moveAll(oldFrom: leftID, newFrom: sharedID)
-            remove(nodeID: leftID)
-        } else {
-            connector.connect(from: sharedID, to: leftID)
+        if nodeDict[leftID] != nil {
+            // remove shared sensors from left
+            // left is gone -> shared gets the outgoing from left
+            // otherwise shared connects to left
+            leftNode.remove(sensors: sharedSensors)
+            nodeDict[leftID] = leftNode
+            if leftNode.isToBeRemoved() {
+                connector.moveAll(oldFrom: leftID, newFrom: sharedID)
+                remove(nodeID: leftID)
+            } else {
+                connector.connect(from: sharedID, to: leftID)
+            }
         }
-        
-        // remove shared sensors from right
-        // right is gone -> shared gets the outgoing from right
-        // otherwise shared connects to right
-        rightNode.remove(sensors: sharedSensors)
-        nodeDict[rightID] = rightNode
-        if rightNode.isToBeRemoved() {
-            connector.moveAll(oldFrom: rightID, newFrom: sharedID)
-            remove(nodeID: rightID)
-        } else {
-            connector.connect(from: sharedID, to: rightID)
+            
+        if nodeDict[rightID] != nil {
+            
+            // remove shared sensors from right
+            // right is gone -> shared gets the outgoing from right
+            // otherwise shared connects to right
+            rightNode.remove(sensors: sharedSensors)
+            nodeDict[rightID] = rightNode
+            if rightNode.isToBeRemoved() {
+                connector.moveAll(oldFrom: rightID, newFrom: sharedID)
+                remove(nodeID: rightID)
+            } else {
+                connector.connect(from: sharedID, to: rightID)
+            }
         }
-        
         //        cleanUp()
         return answer
         

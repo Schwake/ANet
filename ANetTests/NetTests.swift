@@ -423,20 +423,22 @@ struct NetTests {
         
         print(netInfo.toString())
         
-        for index in 0..<20 {
+        for index in 0..<12 {
             print("IndexComplex: \(index)")
-            net.mergeComplex()
-                        netInfo = crawler.info(net: net)
-                        print(netInfo.toString())
-                    }
-            
-            //        for index in 0..<1 {
-            //            print("IndexInternal: \(index)")
-            //            net .mergeInternal()
-            //            netInfo = crawler.info(net: net)
-            //            print(netInfo.toString())
-            //        }
-            
+            net.mergeComplexRootsLevel0()
+            netInfo = crawler.info(net: net)
+            print(netInfo.toString())
+        }
+        netInfo = crawler.info(net: net)
+        print(netInfo.toString())
+        
+        for index in 0..<12 {
+            print("IndexInternal: \(index)")
+            net .mergeComplexRootsInside()
+            netInfo = crawler.info(net: net)
+            print(netInfo.toString())
+        }
+        
             let dateD2 = Date()
             print("Done: \(dateD2.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
             
@@ -552,7 +554,7 @@ struct NetTests {
         
         @Test func testMnistTrainingSearchDFSAsync() async {
             
-            let positions = 10000
+            let positions = 100
             let net = Net()
             
             print("Images: \(positions)")
@@ -588,10 +590,10 @@ struct NetTests {
             print(netInfo.toString())
 
             for index in 0..<12 {
-                print("IndexComplex: \(index)")
-                net.mergeComplex()
-                            netInfo = crawler.info(net: net)
-                            print(netInfo.toString())
+//                print("IndexComplex: \(index)")
+                net.mergeComplexRootsLevel0()
+//                            netInfo = crawler.info(net: net)
+//                            print(netInfo.toString())
                         }
             
             netInfo = crawler.info(net: net)
@@ -608,7 +610,7 @@ struct NetTests {
             var index = 1
             for searchResult in searchResults {
                 if let result = searchResult.result {
-                    print("\(index) - Result: \(result.asString())")
+//                    print("\(index) - Result: \(result.asString())")
                     index += 1
                 } else {
                     print("\(index) - Missing result")

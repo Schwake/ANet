@@ -57,13 +57,23 @@ class Connector {
         var pathStack = [nodeID]
         var checkDict: [UUID : Bool] = [nodeID : true]
         
+        let start = Date()
+//        print("Start PathFor: \(start.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+
+        
+        
         while !nodeStack.isEmpty {
             let currID = nodeStack.removeFirst()
             for child in outgoing(from: currID) {
                 nodeStack.append(child)
                 if checkDict.keys.contains(child) {
                     print("ACYCLIC GRAPH")
+//                    print("Child: \(child.uuidString)")
+//                    for key in checkDict.keys {
+//                        print("\(key.uuidString)")
+//                    }
                     nodeStack.removeAll()
+                    break
                 } else {
                     checkDict[child] = true
                 }
@@ -71,6 +81,10 @@ class Connector {
             }
         }
 //        print("PathStack size: \(pathStack.count)")
+        
+//        let end = Date()
+//        print("End PathFor: \(end.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
+
         return pathStack
     }
 

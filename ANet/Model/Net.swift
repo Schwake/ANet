@@ -57,6 +57,17 @@ class Net {
     }
     
     
+    func pathAsString(uuid: UUID) -> String {
+        let path = connector.pathFor(nodeID: uuid)
+        var answer = String()
+        for item in path {
+            answer += nodeDict[item]!.sensorsAsString() + ","
+        }
+        
+        return answer
+    }
+    
+    
     func remove(nodeID: UUID) {
         nodeDict.removeValue(forKey: nodeID)
         connector.remove(nodeID: nodeID)
@@ -96,8 +107,8 @@ class Net {
     
     func mergeComplexRootsLevel0() {
         
-//        let nodeList = rootNodeIDsLevel0().shuffled()
-        let nodeList = rootNodeIDsLevel0()
+        let nodeList = rootNodeIDsLevel0().shuffled()
+//        let nodeList = rootNodeIDsLevel0()
         mergeComplex(roots: nodeList)
     }
     
@@ -105,6 +116,7 @@ class Net {
     func mergeComplexRootsInside() {
         
         let nodeList = rootNodeIDsInternal()
+        print("Internal roots: \(nodeList.count)")
         mergeComplex(roots: nodeList)
     }
     
@@ -124,7 +136,8 @@ class Net {
         let maxInd = (nodeList.count / 2) - 1
 //        print("root IDs: \(nodeList.count)")
         guard downInd > 3 else { return }
-        for index in 0...maxInd {
+        for index in 0..<maxInd {
+//            print("merge index: \(index) max: \(maxInd)")
             mergeComplex(left: nodeList[index], right: nodeList[downInd])
             downInd -= 1
         }
@@ -134,19 +147,20 @@ class Net {
     
     func mergeComplex(left leftID: UUID, right rightID: UUID) {
         let pathIDs = connector.pathFor(nodeID: leftID)
-//        print("PathID count: \(pathIDs.count)")
+        print("PathID count: \(pathIDs.count)")
         var index = 0
         for id in pathIDs {
             index += 1
-//            print("id-index: \(index)")
+            print("id-index: \(index)")
             if isValid(id: id) && isValid(id: rightID) {
                 if merge(left: id, right: rightID) {
                     break
                 } else {
-                    break
+                    // Needs to be checked - internal roots seem to lead to acyclic graphs
+//                    break
                 }
             } else {
-                break
+//                break
             }
         }
 //        print("id-index: \(index)")

@@ -423,21 +423,23 @@ struct NetTests {
         
         print(netInfo.toString())
         
-        for index in 0..<12 {
-            print("IndexComplex: \(index)")
+        for index in 0..<1000 {
+//            print("IndexComplex: \(index)")
             net.mergeComplexRootsLevel0()
-            netInfo = crawler.info(net: net)
-            print(netInfo.toString())
+//            net.mergeComplexRootsAll()
+//            netInfo = crawler.info(net: net)
+//            print(netInfo.toString())
         }
         netInfo = crawler.info(net: net)
         print(netInfo.toString())
         
-        for index in 0..<12 {
-            print("IndexInternal: \(index)")
-            net .mergeComplexRootsInside()
-            netInfo = crawler.info(net: net)
-            print(netInfo.toString())
-        }
+//        for index in 0..<1 {
+//            print("IndexInternal: \(index)")
+//            net.mergeComplexRootsInside()
+////            net.mergeComplexRootsAll()
+//            netInfo = crawler.info(net: net)
+//            print(netInfo.toString())
+//        }
         
             let dateD2 = Date()
             print("Done: \(dateD2.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
@@ -554,7 +556,7 @@ struct NetTests {
         
         @Test func testMnistTrainingSearchDFSAsync() async {
             
-            let positions = 100
+            let positions = 10000
             let net = Net()
             
             print("Images: \(positions)")
@@ -577,6 +579,7 @@ struct NetTests {
             
             trainingLabels = Array(labelSensors[0..<positions])
             trainingImages = Array(imageSensors[0..<positions])
+            let searchImages = Array(imageSensors[0..<1000])
             
             let dateT = Date()
             print("Train/Merge: \(dateT.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
@@ -587,9 +590,9 @@ struct NetTests {
     
             let crawler = Crawler()
             var netInfo = crawler.info(net: net)
-            print(netInfo.toString())
+//            print(netInfo.toString())
 
-            for index in 0..<12 {
+            for index in 0..<1000 {
 //                print("IndexComplex: \(index)")
                 net.mergeComplexRootsLevel0()
 //                            netInfo = crawler.info(net: net)
@@ -606,8 +609,9 @@ struct NetTests {
             print("Check: \(dateC.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
             
             
-            let searchResults = await net.searchDFSAsyncBatch(sensors: trainingImages, tasks: 15)
+            let searchResults = await net.searchDFSAsyncBatch(sensors: searchImages, tasks: 15)
             var index = 1
+            var missingCount = 0
             for searchResult in searchResults {
                 if let result = searchResult.result {
 //                    print("\(index) - Result: \(result.asString())")
@@ -615,9 +619,10 @@ struct NetTests {
                 } else {
                     print("\(index) - Missing result")
                     index += 1
+                    missingCount += 1
                 }
             }
-            
+            print("Missing: \(missingCount)")
             let dateDone = Date()
             print("Done: \(dateDone.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
         }

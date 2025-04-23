@@ -224,13 +224,27 @@ struct ConnectorTests {
         #expect(netInfo.depth == 1)
         
         net.merge(left: node1.id, right: node2.id)
-        
-        let rootNodes = net.rootNodeIDs()
-        let path = net.connector.pathFor(nodeID: rootNodes[0])
-        print("Path size: \(path.count) ")
+
+//        dotString = crawler.toDot7Segment(net: net)
+//        crawler.visualize(content: dotString)
+//        netInfo = crawler.info(net: net)
+//
+//        
+//        let rootNodes = net.rootNodeIDs()
+//        let path = net.pathAsString(uuid: rootNodes.sorted().last!)
+//        print("Path: \(path)")
         
         // Content of 0,1 might switch - rerun and check again
-        net.mergeComplex(left: rootNodes[0], right: rootNodes[1])
+        let rootNodes = net.rootNodeIDsLevel0().sorted()
+        print("Root - 0: \(net.nodeDict[rootNodes.first!]!.sensorsAsString() + ",")")
+        print("Root - 1: \(net.nodeDict[rootNodes.last!]!.sensorsAsString() + ",")")
+        let path = net.pathAsString(uuid: rootNodes.sorted().first!)
+        print("Path: \(path)")
+        net.mergeComplex(left: rootNodes.first!, right: rootNodes.last!)
+        
+        for item in net.rootNodeIDsLevel0().sorted() {
+            print("Root: \(net.nodeDict[item]!.sensorsAsString())")
+        }
         dotString = crawler.toDot7Segment(net: net)
         crawler.visualize(content: dotString)
         netInfo = crawler.info(net: net)
@@ -239,6 +253,7 @@ struct ConnectorTests {
         #expect(netInfo.incoming == 6)
         #expect(netInfo.outgoing == 6)
         #expect(netInfo.roots == 2)
+        #expect(netInfo.rootsInside == 1)
         #expect(netInfo.results == 3)
         #expect(netInfo.depth == 3)
         

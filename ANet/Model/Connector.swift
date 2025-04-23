@@ -64,18 +64,20 @@ class Connector {
         
         while !nodeStack.isEmpty {
             let currID = nodeStack.removeFirst()
-            for child in outgoing(from: currID) {
+            for child in outgoing(from: currID).sorted() {
+                // do not process results
+                guard has(from: child) else { continue }
                 nodeStack.append(child)
                 if checkDict.keys.contains(child) {
-                    print("ACYCLIC GRAPH")
+//                    print("ACYCLIC GRAPH")
 //                    print("Child: \(child.uuidString)")
 //                    for key in checkDict.keys {
 //                        print("\(key.uuidString)")
 //                    }
-                    nodeStack.removeAll()
+//                    nodeStack.removeAll()
                     break
                 } else {
-                    checkDict[child] = true
+                        checkDict[child] = true
                 }
                 pathStack.append(child)
             }

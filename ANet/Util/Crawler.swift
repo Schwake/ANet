@@ -130,9 +130,8 @@ class Crawler {
             }
         }
         
-        let rootNodes = net.rootNodeIDs()
-        let finalRoots =  rootNodes.filter { !net.connector.incoming(to: $0).isEmpty }
-        rootsInside = finalRoots.count
+        roots = net.rootNodeIDs().count
+        rootsInside = net.rootNodeIDsInternal().count
         
         return NetInfo(nodes: nodes, incoming: incoming, outgoing: outgoing, depth: depth, results: results, roots: roots, rootsInside: rootsInside)
         

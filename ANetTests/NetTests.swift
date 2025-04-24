@@ -424,22 +424,23 @@ struct NetTests {
         print(netInfo.toString())
         
         for index in 0..<1000 {
-//            print("IndexComplex: \(index)")
-            net.mergeComplexRootsLevel0()
-//            net.mergeComplexRootsAll()
+            print("IndexRoots0-false: \(index)")
+            net.mergeComplexRootsLevel0(basic: false)
 //            netInfo = crawler.info(net: net)
 //            print(netInfo.toString())
         }
         netInfo = crawler.info(net: net)
         print(netInfo.toString())
         
-//        for index in 0..<1 {
-//            print("IndexInternal: \(index)")
-//            net.mergeComplexRootsInside()
-////            net.mergeComplexRootsAll()
+        for index in 0..<200 {
+            print("IndexRoots0-true: \(index)")
+            net.mergeComplexRootsLevel0(basic: true)
 //            netInfo = crawler.info(net: net)
-//            print(netInfo.toString())
-//        }
+            print(netInfo.toString())
+        }
+        
+        netInfo = crawler.info(net: net)
+        print(netInfo.toString())
         
             let dateD2 = Date()
             print("Done: \(dateD2.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")

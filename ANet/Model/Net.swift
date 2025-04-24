@@ -76,7 +76,7 @@ class Net {
     
     func merge() {
         
-        let nodeList = rootNodeIDsLevel0()
+        let nodeList = rootNodeIDsLevel0().shuffled()
         
         var downInd = nodeList.count - 1
         let maxInd = (nodeList.count / 2) - 1
@@ -105,11 +105,10 @@ class Net {
 //    }
     
     
-    func mergeComplexRootsLevel0() {
+    func mergeComplexRootsLevel0(basic: Bool = false) {
         
         let nodeList = rootNodeIDsLevel0().shuffled()
-//        let nodeList = rootNodeIDsLevel0()
-        mergeComplex(roots: nodeList)
+        mergeComplex(roots: nodeList, basic: basic)
     }
     
     
@@ -128,7 +127,7 @@ class Net {
         mergeComplex(roots: rootsLevel0 + rootsInside)
     }
     
-    func mergeComplex(roots: [UUID]) {
+    func mergeComplex(roots: [UUID], basic: Bool = false) {
         
         let nodeList = roots
         
@@ -138,26 +137,26 @@ class Net {
         guard downInd > 3 else { return }
         for index in 0..<maxInd {
 //            print("merge index: \(index) max: \(maxInd)")
-            mergeComplex(left: nodeList[index], right: nodeList[downInd])
+            mergeComplex(left: nodeList[index], right: nodeList[downInd], basic: basic)
             downInd -= 1
         }
 
     }
     
     
-    func mergeComplex(left leftID: UUID, right rightID: UUID) {
+    func mergeComplex(left leftID: UUID, right rightID: UUID, basic: Bool = false) {
         let pathIDs = connector.pathFor(nodeID: leftID)
-        print("PathID count: \(pathIDs.count)")
+//        print("PathID count: \(pathIDs.count)")
         var index = 0
         for id in pathIDs {
             index += 1
-            print("id-index: \(index)")
+//            print("id-index: \(index)")
             if isValid(id: id) && isValid(id: rightID) {
                 if merge(left: id, right: rightID) {
                     break
                 } else {
                     // Needs to be checked - internal roots seem to lead to acyclic graphs
-//                    break
+                    if !basic { break }
                 }
             } else {
 //                break

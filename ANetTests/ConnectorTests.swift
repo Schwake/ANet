@@ -223,7 +223,7 @@ struct ConnectorTests {
         #expect(netInfo.results == 3)
         #expect(netInfo.depth == 1)
         
-        net.merge(left: node1.id, right: node2.id)
+        _ = net.merge(left: node1.id, right: node2.id)
 
 //        dotString = crawler.toDot7Segment(net: net)
 //        crawler.visualize(content: dotString)
@@ -240,7 +240,7 @@ struct ConnectorTests {
         print("Root - 1: \(net.nodeDict[rootNodes.last!]!.sensorsAsString() + ",")")
         let path = net.pathAsString(uuid: rootNodes.sorted().first!)
         print("Path: \(path)")
-        net.mergeComplex(left: rootNodes.first!, right: rootNodes.last!)
+        net.mergeComplex(left: rootNodes.first!, right: rootNodes.last!, basic: true)
         
         for item in net.rootNodeIDsLevel0().sorted() {
             print("Root: \(net.nodeDict[item]!.sensorsAsString())")

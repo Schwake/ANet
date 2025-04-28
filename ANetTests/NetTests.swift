@@ -369,7 +369,7 @@ struct NetTests {
         
         // There are only two root nodes
         let rootNodes = net.rootNodeIDs()
-        net.mergeComplex(left: rootNodes[0], right: rootNodes[1])
+        net.mergeComplex(left: rootNodes[0], right: rootNodes[1], basic: true)
         netInfo = crawler.info(net: net)
         dotString = crawler.toDot7Segment(net: net)
         crawler.visualize(content: dotString)
@@ -594,18 +594,25 @@ struct NetTests {
 //            print(netInfo.toString())
 
             for index in 0..<1000 {
-//                print("IndexComplex: \(index)")
-                net.mergeComplexRootsLevel0()
+//                print("Basic - false: \(index)")
+                net.mergeComplexRootsLevel0(basic: false)
 //                            netInfo = crawler.info(net: net)
 //                            print(netInfo.toString())
-                        }
+            }
             
             netInfo = crawler.info(net: net)
             print(netInfo.toString())
             
-//            net.merge()
-//            print("Roots: \(net.rootNodeIDs().count)")
-//            
+            for index in 0..<6 {
+//                print("basic-true: \(index)")
+                net.mergeComplexRootsLevel0(basic: false)
+//                            netInfo = crawler.info(net: net)
+//                            print(netInfo.toString())
+            }
+            
+            netInfo = crawler.info(net: net)
+            print(netInfo.toString())
+          
             let dateC = Date()
             print("Check: \(dateC.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
             

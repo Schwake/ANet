@@ -12,6 +12,12 @@ class Net {
     let connector = Connector()
     var nodeDict: [UUID : Node] = [:]
     
+    
+    func isRootNode(nodeID: UUID) -> Bool {
+        return rootNodeIDs().contains(nodeID)
+    }
+    
+    
     // MARK: Populate
     
     func populate(sensors: [Sensor], result: Sensor) {

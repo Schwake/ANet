@@ -494,8 +494,10 @@ struct NetTests {
             let sValueF = Sensor(position: 6)
             let sValueG = Sensor(position: 7)
             
-            net.merge()
-            
+//            net.merge()
+            net.mergeComplexRootsLevel0(basic: true)
+            net.mergeComplexRootsLevel0(basic: true)
+
             let crawler = Crawler()
             let dotString = crawler.toDot7Segment(net: net)
             

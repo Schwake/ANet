@@ -38,7 +38,15 @@ class Crawler {
                 }
                 var fromValue = ("\(net.nodeDict[nodeFrom]!.sensorsAs7Segment())")
                 fromValue = "\(apo)\(fromValue)\(apo)"
-                aString += ("\(fromValue) -> \(toValue)\n")
+                if net.isRootNode(nodeID: nodeFrom) {
+                    aString += ("\(fromValue) [shape=box]\n")
+                    aString += ("\(fromValue) -> \(toValue)\n")
+                } else {
+                    aString += ("\(fromValue) -> \(toValue)\n")
+                }
+
+                
+  
             }
         }
         

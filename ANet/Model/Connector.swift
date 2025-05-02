@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Connector {
+struct Connector {
     
     // outgoing connections ->
     // fromDict from -> to (forwards)
@@ -21,7 +21,7 @@ class Connector {
     // MARK: Basic
     
     // Add a new connection
-    func connect(from fromNode: Node, to toNode: Node) {
+    mutating func connect(from fromNode: Node, to toNode: Node) {
         fromDict[fromNode.id, default: []].append(toNode.id)
         toDict[toNode.id, default: []].append(fromNode.id)
     }
@@ -134,20 +134,20 @@ class Connector {
 
     
     // Just incase - should have been dealt with in Net
-    func remove(nodeID: UUID) {
+    mutating func remove(nodeID: UUID) {
         fromDict.removeValue(forKey: nodeID)
         toDict.removeValue(forKey: nodeID)
     }
     
     
-    func connect(from fromNodeID: UUID, to toNodeID: UUID) {
+    mutating func connect(from fromNodeID: UUID, to toNodeID: UUID) {
         fromDict[fromNodeID, default: []].append(toNodeID)
         toDict[toNodeID, default: []].append(fromNodeID)
     }
     
     
     // Replace all connections TO cellA with connections to cellB
-    func moveAll(oldTo nodeA: UUID, newTo nodeB: UUID) {
+    mutating func moveAll(oldTo nodeA: UUID, newTo nodeB: UUID) {
         if let nodes = toDict[nodeA] {
             for nodeID in nodes {
                 move(from: nodeID, oldTo: nodeA, newTo: nodeB)
@@ -157,7 +157,7 @@ class Connector {
     
     
     // Replace connection  from -> oldTo to from -> newTo including the to -> from connection
-    func move(from nodeID: UUID, oldTo oldNodeID: UUID, newTo newNodeID: UUID) {
+    mutating func move(from nodeID: UUID, oldTo oldNodeID: UUID, newTo newNodeID: UUID) {
         
         // Remove connection in fromDict
         var newIDs = fromDict[nodeID]?.filter {$0 != oldNodeID}
@@ -174,7 +174,7 @@ class Connector {
     
     
     // Replace all connections FROM cellA with connections from cellB
-    func moveAll(oldFrom nodeA: UUID, newFrom nodeB: UUID) {
+    mutating func moveAll(oldFrom nodeA: UUID, newFrom nodeB: UUID) {
         
         // One by one: Create new connections newFrom <-> to (outgoing/incoming)
         // One by one: Remove old connections oldFrom <- to (incoming)

@@ -10,7 +10,7 @@ import Testing
 struct ConnectorTests {
 
     @Test func hasConnectionTest() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
         connector.connect(from: nodeFrom, to: nodeTo)
@@ -19,7 +19,7 @@ struct ConnectorTests {
     }
     
     @Test func isResultTest() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
         connector.connect(from: nodeFrom, to: nodeTo)
@@ -28,7 +28,7 @@ struct ConnectorTests {
     }
     
     @Test func isRootTest() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
         connector.connect(from: nodeFrom, to: nodeTo)
@@ -40,7 +40,7 @@ struct ConnectorTests {
     }
     
     @Test func removeNodeIDTest() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
         connector.connect(from: nodeFrom, to: nodeTo)
@@ -49,7 +49,7 @@ struct ConnectorTests {
     }
     
     @Test func connectFromToTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
 
@@ -58,7 +58,7 @@ struct ConnectorTests {
     }
     
     @Test func connectFromIDToIDTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
 
@@ -67,7 +67,7 @@ struct ConnectorTests {
     }
     
     @Test func hasFromNodeToNodeTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
 
@@ -76,7 +76,7 @@ struct ConnectorTests {
     }
     
     @Test func hasToNodeFromNodeTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
 
@@ -85,7 +85,7 @@ struct ConnectorTests {
     }
     
     @Test func hasFromTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
 
@@ -94,7 +94,7 @@ struct ConnectorTests {
     }
     
     @Test func hasToTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
 
@@ -103,7 +103,7 @@ struct ConnectorTests {
     }
 
     @Test func outgoingFromTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
         let nodeTo2 = Node(sensors: [Sensor(position: 3)])
@@ -117,7 +117,7 @@ struct ConnectorTests {
     
     
     @Test func moveAllOldToNewToTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 0)])
         let nodeFrom2 = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
@@ -142,7 +142,7 @@ struct ConnectorTests {
     }
     
     @Test func moveFromOldToNewToTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])
         let nodeTo2 = Node(sensors: [Sensor(position: 3)])
@@ -160,7 +160,7 @@ struct ConnectorTests {
     
     
     @Test func moveAllOldFromNewFromTests() async throws {
-        let connector = Connector()
+        var connector = Connector()
         let nodeFrom = Node(sensors: [Sensor(position: 0)])
         let nodeFrom2 = Node(sensors: [Sensor(position: 1)])
         let nodeTo = Node(sensors: [Sensor(position: 2)])

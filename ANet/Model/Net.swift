@@ -9,7 +9,7 @@ import Foundation
 
 class Net {
     
-    let connector = Connector()
+    var connector = Connector()
     var nodeDict: [UUID : Node] = [:]
     
     

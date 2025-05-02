@@ -424,7 +424,7 @@ struct NetTests {
         print(netInfo.toString())
         
         for index in 0..<1000 {
-            print("IndexRoots0-false: \(index)")
+//            print("IndexRoots0-false: \(index)")
             net.mergeComplexRootsLevel0(basic: false)
 //            netInfo = crawler.info(net: net)
 //            print(netInfo.toString())
@@ -433,7 +433,7 @@ struct NetTests {
         print(netInfo.toString())
         
         for index in 0..<200 {
-            print("IndexRoots0-true: \(index)")
+//            print("IndexRoots0-true: \(index)")
             net.mergeComplexRootsLevel0(basic: true)
 //            netInfo = crawler.info(net: net)
             print(netInfo.toString())
@@ -582,7 +582,7 @@ struct NetTests {
             
             trainingLabels = Array(labelSensors[0..<positions])
             trainingImages = Array(imageSensors[0..<positions])
-            let searchImages = Array(imageSensors[0..<1000])
+            let searchImages = Array(imageSensors[0..<100])
             
             let dateT = Date()
             print("Train/Merge: \(dateT.formatted(Date.FormatStyle().month(.twoDigits).day(.twoDigits).year().hour().minute().second(.twoDigits).secondFraction(.fractional(3)).timeZone(.iso8601(.short)))))")
@@ -595,7 +595,7 @@ struct NetTests {
             var netInfo = crawler.info(net: net)
 //            print(netInfo.toString())
 
-            for index in 0..<1000 {
+            for index in 0..<500 {
 //                print("Basic - false: \(index)")
                 net.mergeComplexRootsLevel0(basic: false)
 //                            netInfo = crawler.info(net: net)
@@ -605,9 +605,9 @@ struct NetTests {
             netInfo = crawler.info(net: net)
             print(netInfo.toString())
             
-            for index in 0..<6 {
+            for index in 0..<1 {
 //                print("basic-true: \(index)")
-                net.mergeComplexRootsLevel0(basic: false)
+                net.mergeComplexRootsLevel0(basic: true)
 //                            netInfo = crawler.info(net: net)
 //                            print(netInfo.toString())
             }

@@ -50,7 +50,7 @@ struct NetInfo {
                     nodeStack.append(child)
                     pathStack.append(child)
                 }
-                for item in pathStack {
+                for _ in pathStack {
                     let pathStackCopy = Set(pathStack)
                     if pathStackCopy.count != pathStack.count {
                         answer += 1

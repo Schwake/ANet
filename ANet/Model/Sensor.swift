@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Sensor: Hashable {
+struct Sensor: Hashable, Codable {
     
     let position: Int
     

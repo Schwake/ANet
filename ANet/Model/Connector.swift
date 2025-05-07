@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Connector {
+struct Connector: Codable {
     
     // outgoing connections ->
     // fromDict from -> to (forwards)

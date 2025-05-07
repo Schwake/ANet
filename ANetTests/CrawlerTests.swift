@@ -65,5 +65,46 @@ struct CrawlerTests {
         #expect(netInfo.depth == 1)
 
     }
+    
+    
+    @Test func exportImportNetTests() async throws {
+        
+        let sevenSegments = SevenSegments()
+        let net = Net()
+        
+        let indices = [6,3]
+        for ind in indices {
+            let sensors = sevenSegments.sensors(for: ind)
+            let result = Sensor(position: ind)
+            net.populate(sensors: sensors, result: result)
+        }
+        
+        net.merge()
+        
+        let sensors2 = sevenSegments.sensors(for: 9)
+        let result2 = Sensor(position: 9)
+        net.populate(sensors: sensors2, result: result2)
 
+        net.merge()
+
+        let crawler = Crawler()
+        _ = crawler.exportToFile(net: net, file: "test63.json")
+        
+//        let dotString = crawler.toDot7Segment(net: net)
+//        crawler.visualize(content: dotString)
+
+        let importedNet = crawler.importNet(file: "test63.json")!
+        let netInfo = crawler.info(net: importedNet)
+
+        let info = netInfo.toString()
+        print(info)
+
+        #expect(netInfo.nodes == 7)
+        #expect(netInfo.incoming == 6)
+        #expect(netInfo.outgoing == 6)
+        #expect(netInfo.depth == 2)
+        #expect(netInfo.results == 3)
+        #expect(netInfo.roots == 1)
+        
+    }
 }

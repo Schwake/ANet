@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Net {
+class Net: Codable {
     
     var connector = Connector()
     var nodeDict: [UUID : Node] = [:]

@@ -68,18 +68,57 @@ class Crawler {
     }
     
     
+    func exportToFile(net: Net, file: String) -> String {
+        
+        do {
+            let jsonData = try JSONEncoder().encode(net)
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            return saveToFile(content: jsonString!, file: file)
+        } catch {
+            print("Encoding failed: \(error)")
+        }
+        return ""
+    }
+    
+    
+    func saveToFile(content: String, file: String) -> String {
+        
+        let fileName = file
+        let fileContent = content
+        
+        let url = getDocumentsDirectory().appendingPathComponent(fileName)
+        do {
+            try fileContent.write(to: url, atomically: true, encoding: .utf8)
+        } catch {
+            print(error.localizedDescription)
+        }
+        return url.absoluteString
+    }
+    
+    
     func saveToFile(content: String) -> String {
         
         let dotString = content
         let file = "net.dot"
         
+        return saveToFile(content: dotString, file: file)
+    }
+    
+    
+    func importNet(file: String) -> Net? {
+        
         let url = getDocumentsDirectory().appendingPathComponent(file)
+        
         do {
-            try dotString.write(to: url, atomically: true, encoding: .utf8)
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            let jsonData = try decoder.decode(Net.self, from: data)
+            return jsonData
         } catch {
-            print(error.localizedDescription)
+            print("error:\(error)")
         }
-        return url.absoluteString
+        
+        return nil
     }
     
     
@@ -89,7 +128,7 @@ class Crawler {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         
         // just send back the first one, which ought to be the only one
-        print("Paths: \(paths[0])")
+//        print("Paths: \(paths[0])")
         return paths[0]
     }
     

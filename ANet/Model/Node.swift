@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Node {
+struct Node: Codable {
     
     let id = UUID()
     var sensorDict: [Sensor: Bool] = [:]

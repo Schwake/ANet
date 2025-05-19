@@ -106,8 +106,9 @@ class Crawler {
         print("scriptUrl \(scriptUrl)")
         
         // dot - graphviz expected to be installed and dot to be in path
-//        let dotCmd = "/opt/homebrew/Cellar/graphviz/12.2.1/bin/dot"
-        let dotCmd = "dot"
+     let dotCmd = "/opt/homebrew/Cellar/graphviz/12.2.1/bin/dot"
+//        let dotCmd = "dot"
+//        let dotCmd = currentDirectory.appendingPathComponent("dot").path()
         print("dotCmd \(dotCmd)")
         
         let dotUrl = currentDirectory.appendingPathComponent("net.dot").path()

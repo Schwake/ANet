@@ -39,6 +39,26 @@ struct SevenSegments {
         return sensors
     }
     
+    
+    func populate7Segments() async  {
+        
+        let sevenSegments = SevenSegments()
+        let net = Net()
+        print("hello seven segments")
+        for ind in 0..<10 {
+            let sensors = sevenSegments.sensors(for: ind)
+            let result = Sensor(position: ind)
+            net.populate(sensors: sensors, result: result)
+        }
+        
+        let crawler = Crawler()
+        let dotString = crawler.toDot7Segment(net: net)
+        do {
+            try await crawler.visualize(content: dotString)
+        } catch {
+            print("error")
+        }
+    }
 
 }
 

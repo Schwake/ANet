@@ -45,8 +45,6 @@ class Crawler {
                     aString += ("\(fromValue) -> \(toValue)\n")
                 }
 
-                
-  
             }
         }
         
@@ -56,9 +54,33 @@ class Crawler {
     }
     
     
-    func visualize(content: String) {
+    func createVisualizeScript() async  {
         
-        _ = self.saveToFile(content: content)
+        let sevenSegments = SevenSegments()
+        let net = Net()
+        
+        for ind in 0..<10 {
+            let sensors = sevenSegments.sensors(for: ind)
+            let result = Sensor(position: ind)
+            net.populate(sensors: sensors, result: result)
+        }
+        print("population done")
+        let crawler = Crawler()
+        let dotString = crawler.toDot7Segment(net: net)
+        print("dot string created")
+        do {
+            print("start visualize")
+            try await crawler.visualize(content: dotString)
+//            try await crawler.visualizeMultipleCommands(content: dotString)
+        } catch {
+            print("error")
+        }
+    }
+    
+    
+    func visualize2(content: String) {
+        
+        self.saveToFile(content: content)
 //        print("Basic Net: \(content)")
         
         //
@@ -67,41 +89,160 @@ class Crawler {
         try! Process.run(commandSH, arguments: [paramSH])
     }
     
+
+    func visualize(content: String) async throws {
+        
+        saveToFile(content: content, file: "net.dot")
+        
+        // Get the current working directory
+        guard let currentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Could not get the current directory.")
+            return
+        }
+        print("Current directory \(currentDirectory)")
+        
+        // Create the full path for the dot command, script, dot and pdf files
+        let scriptUrl = currentDirectory.appendingPathComponent("net.sh")
+        print("scriptUrl \(scriptUrl)")
+        
+        // dot - graphviz expected to be installed and dot to be in path
+//        let dotCmd = "/opt/homebrew/Cellar/graphviz/12.2.1/bin/dot"
+        let dotCmd = "dot"
+        print("dotCmd \(dotCmd)")
+        
+        let dotUrl = currentDirectory.appendingPathComponent("net.dot").path()
+        print("dotUrl \(dotUrl)")
+        
+        let pdfUrl = currentDirectory.appendingPathComponent("net.pdf").path()
+        print("pdfUrl \(pdfUrl)")
+        
+        var scriptContent = "#!/bin/bash \n"
+        scriptContent += "\(dotCmd) -Tpdf \(dotUrl) -o \(pdfUrl) \n"
+        scriptContent += "open \(pdfUrl) \n"
+        
+        saveToFile(content: scriptContent, file: "net.sh")
+        
+        let commandSH = URL(fileURLWithPath: "/bin/sh")
+        print("commandSH \(commandSH)")
+        
+        let paramSH = scriptUrl.path
+        print("paramSH \(paramSH)")
+        try! Process.run(commandSH, arguments: [paramSH])
+    }
+   
     
-    func exportToFile(net: Net, file: String) -> String {
+    
+    func visualizeMultipleCommands(content: String) async throws {
+        print("visualize multiple")
+        saveToFile(content: content, file: "net.dot")
+        
+        // Get the current working directory
+        guard let currentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Could not get the current directory.")
+            return
+        }
+        print("Current directory \(currentDirectory)")
+        
+        // dot - graphviz expected to be installed and dot to be in path
+        let dotCmd = "/opt/homebrew/Cellar/graphviz/12.2.1/bin/dot"
+         print("dotCmd \(dotCmd)")
+        
+        let dotUrl = currentDirectory.appendingPathComponent("net.dot").path()
+        print("dotUrl \(dotUrl)")
+        
+        let pdfUrl = currentDirectory.appendingPathComponent("net.pdf").path()
+        print("pdfUrl \(pdfUrl)")
+        
+        // Create the pdf file
+        var commandSH = URL(fileURLWithPath: dotCmd)
+        print("commandSH \(commandSH)")
+        var paramSH = "dotUrl -Tpdf \(dotUrl) -o \(pdfUrl)"
+        print("paramSH \(paramSH)")
+        try! Process.run(commandSH, arguments: [paramSH])
+        
+        // Open the pdf file
+        commandSH = URL(fileURLWithPath: "open")
+        print("commandSH \(commandSH)")
+        paramSH = pdfUrl
+        print("paramSH \(paramSH)")
+        try! Process.run(commandSH, arguments: [paramSH])
+
+        
+        
+    }
+    
+    func cmdExecution(command: URL, param: [String]) {
+        try! Process.run(command, arguments: param)
+    }
+    
+    
+    func exportToFile(net: Net, file: String) {
         
         do {
             let jsonData = try JSONEncoder().encode(net)
             let jsonString = String(data: jsonData, encoding: .utf8)
-            return saveToFile(content: jsonString!, file: file)
+            saveToFile(content: jsonString!, file: file)
         } catch {
             print("Encoding failed: \(error)")
         }
-        return ""
+        return
     }
     
     
-    func saveToFile(content: String, file: String) -> String {
+    func saveToFile(content: String, file: String) {
         
         let fileName = file
         let fileContent = content
         
-        let url = getDocumentsDirectory().appendingPathComponent(fileName)
+        // Get the current working directory
+        guard let currentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Could not get the current directory.")
+            return
+        }
+        
+        // Create the full path for the file
+        let fileURL = currentDirectory.appendingPathComponent(fileName)
+
         do {
-            try fileContent.write(to: url, atomically: true, encoding: .utf8)
+            try fileContent.write(to: fileURL, atomically: true, encoding: .utf8)
+            print("Successfully wrote to file: \(fileURL)")
         } catch {
             print(error.localizedDescription)
+            print("Failed to write to file: \(error)")
         }
-        return url.absoluteString
+       
     }
     
     
-    func saveToFile(content: String) -> String {
+    func writeToFile() {
+        let fileName = "example.txt"
+        let fileContent = "Hello, World!"
+        
+        // Get the current working directory
+        guard let currentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Could not get the current directory.")
+            return
+        }
+        
+        // Create the full path for the file
+        let fileURL = currentDirectory.appendingPathComponent(fileName)
+        
+        // Write the content to the file
+        do {
+            try fileContent.write(to: fileURL, atomically: true, encoding: .utf8)
+            print("Successfully wrote to file: \(fileURL)")
+        } catch {
+            print("Failed to write to file: \(error)")
+        }
+    }
+    
+    
+    func saveToFile(content: String) {
         
         let dotString = content
         let file = "net.dot"
         
-        return saveToFile(content: dotString, file: file)
+        saveToFile(content: dotString, file: file)
     }
     
     

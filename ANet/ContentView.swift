@@ -8,14 +8,44 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    let sevenSegments = SevenSegments()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        VStack(alignment: .leading) {
+            
+            Text("7 Segment Display")
+                .font(.title)
+            VStack(alignment: .leading) {
+                Button ("Visualize Population") {
+                    visualizePopulation()
+                 }
+                
+                //                Button("Twilight - basic roots", action: sevenPopulate)
+                //                Button("Twilight - inside roots", action: sevenPopulate)
+                //                Button("Search", action: sevenPopulate)
+                //
+            }
+            .padding()
         }
-        .padding()
+    }
+    
+    func visualizePopulation() {
+        print("visualize population called")
+        Task {
+            let sevenSegments = SevenSegments()
+            let net = Net()
+            
+            for ind in 0..<10 {
+                let sensors = sevenSegments.sensors(for: ind)
+                let result = Sensor(position: ind)
+                net.populate(sensors: sensors, result: result)
+            }
+            print("task inside")
+            let crawler = Crawler()
+            
+            await crawler.createVisualizeScript()
+        }
     }
 }
 

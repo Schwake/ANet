@@ -24,7 +24,11 @@ struct CrawlerTests {
         let dotString = crawler.toDot7Segment(net: net)
         print("dot: \(dotString)")
         
-        crawler.visualize(content: dotString)
+        do {
+            try await crawler.visualize(content: dotString)
+        } catch {
+            
+        }
     }
     
     @Test func infoNetTests() async throws {
@@ -54,7 +58,11 @@ struct CrawlerTests {
         let crawler = Crawler()
         let dotString = crawler.toDot7Segment(net: net)
         
-        crawler.visualize(content: dotString)
+        do {
+            try await crawler.visualize(content: dotString)
+        } catch {
+            
+        }
         netInfo = crawler.info(net: net)
         
         #expect(netInfo.nodes == 20)
@@ -107,4 +115,26 @@ struct CrawlerTests {
         #expect(netInfo.roots == 1)
         
     }
+    
+    
+    @Test func createVisualizeScript() async {
+        
+        let sevenSegments = SevenSegments()
+        let net = Net()
+        
+        for ind in 0..<10 {
+            let sensors = sevenSegments.sensors(for: ind)
+            let result = Sensor(position: ind)
+            net.populate(sensors: sensors, result: result)
+        }
+        
+        let crawler = Crawler()
+        let dotString = crawler.toDot7Segment(net: net)
+        do {
+            try await crawler.visualize(content: dotString)
+        } catch {
+                
+        }
+    }
+    
 }

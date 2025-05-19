@@ -15,3 +15,7 @@ struct ANetApp: App {
         }
     }
 }
+
+#Preview {
+    ContentView()
+}

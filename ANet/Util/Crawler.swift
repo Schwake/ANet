@@ -54,7 +54,7 @@ class Crawler {
     }
     
     
-    func createVisualizeScript() async  {
+    func visualizeNetPopulation() async  {
         
         let sevenSegments = SevenSegments()
         let net = Net()
@@ -64,29 +64,13 @@ class Crawler {
             let result = Sensor(position: ind)
             net.populate(sensors: sensors, result: result)
         }
-        print("population done")
-        let crawler = Crawler()
-        let dotString = crawler.toDot7Segment(net: net)
-        print("dot string created")
+//        let crawler = Crawler()
+        let dotString = toDot7Segment(net: net)
         do {
-            print("start visualize")
-            try await crawler.visualize(content: dotString)
-//            try await crawler.visualizeMultipleCommands(content: dotString)
+            try await visualize(content: dotString)
         } catch {
-            print("error")
+            print("error visualizing Net population")
         }
-    }
-    
-    
-    func visualize2(content: String) {
-        
-        self.saveToFile(content: content)
-//        print("Basic Net: \(content)")
-        
-        //
-        let commandSH = URL(fileURLWithPath: "/bin/sh")
-        let paramSH = "/Users/gregwerk/nobel/ANet/net.sh"
-        try! Process.run(commandSH, arguments: [paramSH])
     }
     
 
@@ -106,8 +90,8 @@ class Crawler {
         print("scriptUrl \(scriptUrl)")
         
         // dot - graphviz expected to be installed and dot to be in path
-     let dotCmd = "/opt/homebrew/Cellar/graphviz/12.2.1/bin/dot"
-//        let dotCmd = "dot"
+//     let dotCmd = "/opt/homebrew/Cellar/graphviz/12.2.1/bin/dot"
+       let dotCmd = "dot"
 //        let dotCmd = currentDirectory.appendingPathComponent("dot").path()
         print("dotCmd \(dotCmd)")
         
@@ -131,51 +115,6 @@ class Crawler {
         try! Process.run(commandSH, arguments: [paramSH])
     }
    
-    
-    
-    func visualizeMultipleCommands(content: String) async throws {
-        print("visualize multiple")
-        saveToFile(content: content, file: "net.dot")
-        
-        // Get the current working directory
-        guard let currentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            print("Could not get the current directory.")
-            return
-        }
-        print("Current directory \(currentDirectory)")
-        
-        // dot - graphviz expected to be installed and dot to be in path
-        let dotCmd = "/opt/homebrew/Cellar/graphviz/12.2.1/bin/dot"
-         print("dotCmd \(dotCmd)")
-        
-        let dotUrl = currentDirectory.appendingPathComponent("net.dot").path()
-        print("dotUrl \(dotUrl)")
-        
-        let pdfUrl = currentDirectory.appendingPathComponent("net.pdf").path()
-        print("pdfUrl \(pdfUrl)")
-        
-        // Create the pdf file
-        var commandSH = URL(fileURLWithPath: dotCmd)
-        print("commandSH \(commandSH)")
-        var paramSH = "dotUrl -Tpdf \(dotUrl) -o \(pdfUrl)"
-        print("paramSH \(paramSH)")
-        try! Process.run(commandSH, arguments: [paramSH])
-        
-        // Open the pdf file
-        commandSH = URL(fileURLWithPath: "open")
-        print("commandSH \(commandSH)")
-        paramSH = pdfUrl
-        print("paramSH \(paramSH)")
-        try! Process.run(commandSH, arguments: [paramSH])
-
-        
-        
-    }
-    
-    func cmdExecution(command: URL, param: [String]) {
-        try! Process.run(command, arguments: param)
-    }
-    
     
     func exportToFile(net: Net, file: String) {
         
@@ -209,30 +148,6 @@ class Crawler {
             print("Successfully wrote to file: \(fileURL)")
         } catch {
             print(error.localizedDescription)
-            print("Failed to write to file: \(error)")
-        }
-       
-    }
-    
-    
-    func writeToFile() {
-        let fileName = "example.txt"
-        let fileContent = "Hello, World!"
-        
-        // Get the current working directory
-        guard let currentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            print("Could not get the current directory.")
-            return
-        }
-        
-        // Create the full path for the file
-        let fileURL = currentDirectory.appendingPathComponent(fileName)
-        
-        // Write the content to the file
-        do {
-            try fileContent.write(to: fileURL, atomically: true, encoding: .utf8)
-            print("Successfully wrote to file: \(fileURL)")
-        } catch {
             print("Failed to write to file: \(error)")
         }
     }

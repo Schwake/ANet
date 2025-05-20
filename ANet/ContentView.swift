@@ -18,7 +18,7 @@ struct ContentView: View {
                 .font(.title)
             VStack(alignment: .leading) {
                 Button ("Visualize Population") {
-                    visualizePopulation()
+                    visualizeNetPopulation()
                  }
                 
                 //                Button("Twilight - basic roots", action: sevenPopulate)
@@ -30,23 +30,34 @@ struct ContentView: View {
         }
     }
     
-    func visualizePopulation() {
-        print("visualize population called")
+//    func visualizePopulation() {
+//        print("visualize population called")
+//        Task {
+//            let sevenSegments = SevenSegments()
+//            let net = Net()
+//            
+//            for ind in 0..<10 {
+//                let sensors = sevenSegments.sensors(for: ind)
+//                let result = Sensor(position: ind)
+//                net.populate(sensors: sensors, result: result)
+//            }
+//            print("task inside")
+//            let crawler = Crawler()
+//            
+//            await crawler.createVisualizeScript()
+//        }
+//    }
+    
+    func visualizeNetPopulation() {
+        print("visualize Net population called")
         Task {
-            let sevenSegments = SevenSegments()
-            let net = Net()
-            
-            for ind in 0..<10 {
-                let sensors = sevenSegments.sensors(for: ind)
-                let result = Sensor(position: ind)
-                net.populate(sensors: sensors, result: result)
-            }
-            print("task inside")
             let crawler = Crawler()
-            
-            await crawler.createVisualizeScript()
+            await crawler.visualizeNetPopulation()
         }
     }
+    
+    
+    
 }
 
 #Preview {

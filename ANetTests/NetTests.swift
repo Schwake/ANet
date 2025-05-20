@@ -288,7 +288,7 @@ struct NetTests {
 
     
     
-    @Test func mergeTests() {
+    @Test func mergeTests() async {
         
         let sevenSegments = SevenSegments()
         let net = Net()
@@ -303,11 +303,14 @@ struct NetTests {
         let crawler = Crawler()
         let dotString = crawler.toDot7Segment(net: net)
         
-        crawler.visualize(content: dotString)
+        do {
+            try await crawler.visualize(content: dotString)
+        } catch {
+            print("error calling crawler.visualize")
+        }
     }
     
-    
-    @Test func mergeComplex() {
+    @Test func mergeComplex() async {
         
         let net = Net()
         let sensor1: Sensor = Sensor(position: 1)
@@ -372,7 +375,12 @@ struct NetTests {
         net.mergeComplex(left: rootNodes[0], right: rootNodes[1], basic: true)
         netInfo = crawler.info(net: net)
         dotString = crawler.toDot7Segment(net: net)
-        crawler.visualize(content: dotString)
+        
+        do {
+            try await crawler.visualize(content: dotString)
+        } catch {
+            print("error calling crawler.visualize")
+        }
         
         #expect(netInfo.nodes == 7)
         #expect(netInfo.incoming == 6)
@@ -473,7 +481,7 @@ struct NetTests {
         }
         
         
-        @Test func testMergeDetailSevenSegments() {
+    @Test func testMergeDetailSevenSegments() async {
             
             let sevenSegments = SevenSegments()
             let net = Net()
@@ -501,7 +509,11 @@ struct NetTests {
             let crawler = Crawler()
             let dotString = crawler.toDot7Segment(net: net)
             
-            crawler.visualize(content: dotString)
+            do {
+                try await crawler.visualize(content: dotString)
+            } catch {
+                print("error calling crawler.visualize")
+            }
             
             let netInfo = crawler.info(net: net)
             
